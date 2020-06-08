@@ -1,2 +1,2 @@
 # plumejs-router
-A router mechanism for Plumes
+A router mechanism for PlumeJs
