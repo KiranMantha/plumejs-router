@@ -1,4 +1,4 @@
-import { Component, html } from "plumejs";
+import { Component, html } from "@plumejs/core";
 import { InternalRouter } from "./internalRouterService";
 
 const registerRouterComponent = () => {

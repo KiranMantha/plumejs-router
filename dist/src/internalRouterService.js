@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.InternalRouter = void 0;
 const tslib_1 = require("tslib");
-const plumejs_1 = require("plumejs");
+const core_1 = require("@plumejs/core");
 const rxjs_1 = require("rxjs");
 const staticRouter_1 = require("./staticRouter");
 let InternalRouter = class InternalRouter {
@@ -43,7 +43,7 @@ let InternalRouter = class InternalRouter {
         });
         let routeItem = routeArr.length > 0 ? routeArr[0] : null;
         if (routeItem) {
-            plumejs_1.wrapIntoObservable(routeItem.canActivate()).subscribe((val) => {
+            core_1.wrapIntoObservable(routeItem.canActivate()).subscribe((val) => {
                 if (!val)
                     return;
                 let _params = staticRouter_1.StaticRouter.checkParams(uParams, routeItem);
@@ -51,7 +51,7 @@ let InternalRouter = class InternalRouter {
                     this.currentRoute.params = _params;
                     if (!routeItem.IsRegistered) {
                         if (routeItem.TemplatePath) {
-                            plumejs_1.wrapIntoObservable(routeItem.TemplatePath()).subscribe((res) => {
+                            core_1.wrapIntoObservable(routeItem.TemplatePath()).subscribe((res) => {
                                 routeItem.IsRegistered = true;
                                 this.$templateSubscriber.next(routeItem.Template);
                             });
@@ -84,7 +84,7 @@ let InternalRouter = class InternalRouter {
     }
 };
 InternalRouter = tslib_1.__decorate([
-    plumejs_1.Injectable(),
+    core_1.Injectable(),
     tslib_1.__metadata("design:paramtypes", [])
 ], InternalRouter);
 exports.InternalRouter = InternalRouter;

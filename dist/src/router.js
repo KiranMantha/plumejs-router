@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerRouterComponent = void 0;
 const tslib_1 = require("tslib");
-const plumejs_1 = require("plumejs");
+const core_1 = require("@plumejs/core");
 const internalRouterService_1 = require("./internalRouterService");
 const registerRouterComponent = () => {
     let RouterOutlet = class RouterOutlet {
@@ -26,19 +26,19 @@ const registerRouterComponent = () => {
         }
         render() {
             if (!this.template) {
-                return plumejs_1.html `
+                return core_1.html `
 					<div></div>
 				`;
             }
             else {
                 const stringArray = [`${this.template}`];
                 stringArray.raw = [`${this.template}`];
-                return plumejs_1.html(stringArray);
+                return core_1.html(stringArray);
             }
         }
     };
     RouterOutlet = tslib_1.__decorate([
-        plumejs_1.Component({
+        core_1.Component({
             selector: "router-outlet",
             useShadow: false
         }),

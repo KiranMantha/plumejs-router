@@ -14,7 +14,10 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "importHelpers": true,
-    "noEmitOnError": true
+    "noEmitOnError": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ]
   },
   "exclude": ["__tests__","dist", "node_modules"]
 }

@@ -1,5 +1,5 @@
 //https://krasimirtsonev.com/blog/article/A-modern-JavaScript-router-in-100-lines-history-api-pushState-hash-url
-import { Injectable, isArray } from 'plumejs';
+import { Injectable, isArray } from '@plumejs/core';
 import { isNode } from "browser-or-node";
 import { Route, ICurrentRoute } from "./types";
 import { StaticRouter } from './staticRouter';

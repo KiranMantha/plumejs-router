@@ -1,4 +1,4 @@
-import { Injectable, wrapIntoObservable } from "plumejs";
+import { Injectable, wrapIntoObservable } from "@plumejs/core";
 import { Subject } from "rxjs";
 import { ICurrentRoute } from "./types";
 import { StaticRouter } from "./staticRouter";
