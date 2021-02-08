@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerRouterComponent = void 0;
 const tslib_1 = require("tslib");
 const core_1 = require("@plumejs/core");
-const internalRouterService_1 = require("./internalRouterService");
+const internalRouter_service_1 = require("./internalRouter.service");
 const registerRouterComponent = () => {
     let RouterOutlet = class RouterOutlet {
         constructor(router) {
@@ -42,7 +42,7 @@ const registerRouterComponent = () => {
             selector: "router-outlet",
             useShadow: false
         }),
-        tslib_1.__metadata("design:paramtypes", [internalRouterService_1.InternalRouter])
+        tslib_1.__metadata("design:paramtypes", [internalRouter_service_1.InternalRouter])
     ], RouterOutlet);
 };
 exports.registerRouterComponent = registerRouterComponent;

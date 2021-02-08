@@ -5,7 +5,7 @@ const tslib_1 = require("tslib");
 const core_1 = require("@plumejs/core");
 const browser_or_node_1 = require("browser-or-node");
 const staticRouter_1 = require("./staticRouter");
-const internalRouterService_1 = require("./internalRouterService");
+const internalRouter_service_1 = require("./internalRouter.service");
 let Router = class Router {
     constructor(internalRouter) {
         this.getCurrentRoute = internalRouter.getCurrentRoute.bind(internalRouter);
@@ -26,6 +26,6 @@ let Router = class Router {
 };
 Router = tslib_1.__decorate([
     core_1.Injectable(),
-    tslib_1.__metadata("design:paramtypes", [internalRouterService_1.InternalRouter])
+    tslib_1.__metadata("design:paramtypes", [internalRouter_service_1.InternalRouter])
 ], Router);
 exports.Router = Router;

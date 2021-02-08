@@ -1,3 +1,3 @@
-export { registerRouterComponent } from './src/router';
-export { Router } from './src/routerService';
-export { Route } from './src/types';
+export { registerRouterComponent } from './src/router.component';
+export { Router } from './src/router.service';
+export { Route } from './src/router.model';

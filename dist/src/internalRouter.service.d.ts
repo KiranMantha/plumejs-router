@@ -1,5 +1,5 @@
 import { Subject } from "rxjs";
-import { ICurrentRoute } from "./types";
+import { ICurrentRoute } from "./router.model";
 export declare class InternalRouter {
     currentRoute: ICurrentRoute;
     $templateSubscriber: Subject<unknown>;
