@@ -1,4 +1,4 @@
-import { Route, InternalRouteItem, RouteItem, jsonObject } from './types';
+import { Route, InternalRouteItem, RouteItem, jsonObject } from './router.model';
 
 export class StaticRouter {
 	static routList: Array<InternalRouteItem> = [];
@@ -54,7 +54,7 @@ export class StaticRouter {
 			obj.Template = r.template;
 			obj.TemplatePath = r.templatePath;
 		}
-		if(r.canActivate) obj.canActivate = r.canActivate
+		if (r.canActivate) obj.canActivate = r.canActivate
 		obj.ParamCount = StaticRouter.getParamCount(obj.Params);
 		StaticRouter.routList.push(obj);
 	}

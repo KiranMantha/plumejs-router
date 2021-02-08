@@ -1,5 +1,5 @@
 import { Component, html } from "@plumejs/core";
-import { InternalRouter } from "./internalRouterService";
+import { InternalRouter } from "./internalRouter.service";
 
 const registerRouterComponent = () => {
 	@Component({
@@ -12,7 +12,7 @@ const registerRouterComponent = () => {
 
 		isRoutesAdded = false;
 
-		constructor(private router: InternalRouter) {}
+		constructor(private router: InternalRouter) { }
 
 		beforeMount() {
 			this.router.$templateSubscriber.subscribe((tmpl: string) => {
@@ -21,12 +21,12 @@ const registerRouterComponent = () => {
 			});
 		}
 
-		mount() {		
+		mount() {
 			let path = window.location.hash.replace(/^#/, '');
 			this.router.navigateTo(path);
 		}
 
-		unmount(){
+		unmount() {
 			this.router.$templateSubscriber.unsubscribe();
 		}
 
