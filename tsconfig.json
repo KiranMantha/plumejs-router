@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": [
+      "dom",
+      "ESNext"
+    ],
+    "moduleResolution": "node",
+    "declaration": true,
+    "inlineSourceMap": false,
+    "declarationDir": "dist",
+    "outDir": "dist",
+    "rootDir": "./",
+    "removeComments": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "importHelpers": true,
+    "noEmitOnError": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ]
+  },
+  "exclude": [
+    "__tests__",
+    "dist",
+    "node_modules"
+  ]
+}
