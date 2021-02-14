@@ -1,16 +1,13 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.InternalRouter = void 0;
-const tslib_1 = require("tslib");
-const core_1 = require("@plumejs/core");
-const rxjs_1 = require("rxjs");
-const staticRouter_1 = require("./staticRouter");
+import { __decorate, __metadata } from "tslib";
+import { Injectable, wrapIntoObservable } from "@plumejs/core";
+import { Subject } from "rxjs";
+import { StaticRouter } from "./staticRouter";
 let InternalRouter = class InternalRouter {
     constructor() {
         this.currentRoute = {
             params: {},
         };
-        this.$templateSubscriber = new rxjs_1.Subject();
+        this.$templateSubscriber = new Subject();
         window.addEventListener("hashchange", () => {
             this._registerOnHashChange();
         }, false);
@@ -32,7 +29,7 @@ let InternalRouter = class InternalRouter {
         let uParams = path.split("/").filter((h) => {
             return h.length > 0;
         });
-        let routeArr = staticRouter_1.StaticRouter.routList.filter((route) => {
+        let routeArr = StaticRouter.routList.filter((route) => {
             if (route.Params.length === uParams.length &&
                 this._routeMatcher(route.Url, path)) {
                 return route;
@@ -43,15 +40,15 @@ let InternalRouter = class InternalRouter {
         });
         let routeItem = routeArr.length > 0 ? routeArr[0] : null;
         if (routeItem) {
-            core_1.wrapIntoObservable(routeItem.canActivate()).subscribe((val) => {
+            wrapIntoObservable(routeItem.canActivate()).subscribe((val) => {
                 if (!val)
                     return;
-                let _params = staticRouter_1.StaticRouter.checkParams(uParams, routeItem);
+                let _params = StaticRouter.checkParams(uParams, routeItem);
                 if (Object.keys(_params).length > 0 || path) {
                     this.currentRoute.params = _params;
                     if (!routeItem.IsRegistered) {
                         if (routeItem.TemplatePath) {
-                            core_1.wrapIntoObservable(routeItem.TemplatePath()).subscribe((res) => {
+                            wrapIntoObservable(routeItem.TemplatePath()).subscribe((res) => {
                                 routeItem.IsRegistered = true;
                                 this.$templateSubscriber.next(routeItem.Template);
                             });
@@ -83,8 +80,8 @@ let InternalRouter = class InternalRouter {
         }
     }
 };
-InternalRouter = tslib_1.__decorate([
-    core_1.Injectable(),
-    tslib_1.__metadata("design:paramtypes", [])
+InternalRouter = __decorate([
+    Injectable(),
+    __metadata("design:paramtypes", [])
 ], InternalRouter);
-exports.InternalRouter = InternalRouter;
+export { InternalRouter };

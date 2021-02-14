@@ -1,4 +1,4 @@
-import { Route, InternalRouteItem, RouteItem, jsonObject } from './router.model';
+import { InternalRouteItem, jsonObject, Route, RouteItem } from './router.model';
 
 export class StaticRouter {
 	static routList: Array<InternalRouteItem> = [];

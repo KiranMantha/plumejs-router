@@ -28,4 +28,5 @@ interface InternalRouteItem extends RouteItem {
 
 type jsonObject = { [index: string]: any };
 
-export { Route, RouteItem, ICurrentRoute, InternalRouteItem, jsonObject }
+export { Route, RouteItem, ICurrentRoute, InternalRouteItem, jsonObject };
+

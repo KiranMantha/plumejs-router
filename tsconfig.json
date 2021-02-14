@@ -1,8 +1,11 @@
 {
   "compilerOptions": {
-    "target": "es2015",
-    "module": "commonjs",
-    "lib": ["dom", "es2015", "es2015.promise"],
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": [
+      "dom",
+      "ESNext"
+    ],
     "moduleResolution": "node",
     "declaration": true,
     "inlineSourceMap": false,
@@ -19,5 +22,9 @@
       "node_modules/@types"
     ]
   },
-  "exclude": ["__tests__","dist", "node_modules"]
+  "exclude": [
+    "__tests__",
+    "dist",
+    "node_modules"
+  ]
 }

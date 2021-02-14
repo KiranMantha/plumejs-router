@@ -1,5 +1,5 @@
-import { Route, ICurrentRoute } from "./router.model";
 import { InternalRouter } from './internalRouter.service';
+import { ICurrentRoute, Route } from "./router.model";
 export declare class Router {
     getCurrentRoute: () => ICurrentRoute;
     navigateTo: (path: string) => void;
