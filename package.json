@@ -6,6 +6,9 @@
   "files": [
     "dist/**/*"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "tsc": "rimraf dist && tsc",
     "patch-update": "npm version patch",
