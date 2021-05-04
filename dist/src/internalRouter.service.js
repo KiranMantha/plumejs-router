@@ -1,8 +1,7 @@
-import { __decorate, __metadata } from "tslib";
 import { Injectable, wrapIntoObservable } from "@plumejs/core";
 import { Subject } from "rxjs";
 import { StaticRouter } from "./staticRouter";
-let InternalRouter = class InternalRouter {
+export class InternalRouter {
     constructor() {
         this.currentRoute = {
             params: {},
@@ -79,9 +78,5 @@ let InternalRouter = class InternalRouter {
             this._navigateTo(path);
         }
     }
-};
-InternalRouter = __decorate([
-    Injectable(),
-    __metadata("design:paramtypes", [])
-], InternalRouter);
-export { InternalRouter };
+}
+Injectable("InternalRouter")([InternalRouter]);
