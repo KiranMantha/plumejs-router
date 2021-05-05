@@ -87,8 +87,8 @@ const astTransformer: ts.TransformerFactory<ts.SourceFile> = (context: ts.Transf
                             )]
                         ));
                     }
-                    const classNode = factory.updateClassDeclaration(node, undefined, node.modifiers, node.name, node.typeParameters, node.heritageClauses, node.members);
-                    return [ts.visitEachChild(classNode, visitor, context), decoratorStaticNode];
+                    const updatedClassNode = factory.updateClassDeclaration(node, undefined, node.modifiers, node.name, node.typeParameters, node.heritageClauses, node.members);
+                    return [ts.visitEachChild(updatedClassNode, visitor, context), decoratorStaticNode];
                 }
             }
             if (ts.isPropertyDeclaration(node)) {
@@ -106,7 +106,8 @@ const astTransformer: ts.TransformerFactory<ts.SourceFile> = (context: ts.Transf
                                 true
                             )
                         );
-                        return [decoratorStaticNode, ts.visitEachChild(node, visitor, context)];
+                        const updatedPropertyNode = factory.updatePropertyDeclaration(node, undefined, node.modifiers, node.name, node.questionToken, node.type, node.initializer);
+                        return [decoratorStaticNode, ts.visitEachChild(updatedPropertyNode, visitor, context)];
                     }
                 }
             }
