@@ -1,4 +1,5 @@
-import { InternalRouteItem, jsonObject, Route, RouteItem } from './router.model';
+import { jsonObject } from '@plumejs/core';
+import { InternalRouteItem, Route, RouteItem } from './router.model';
 
 export class StaticRouter {
 	static routList: Array<InternalRouteItem> = [];

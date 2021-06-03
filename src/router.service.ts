@@ -1,5 +1,5 @@
 //https://krasimirtsonev.com/blog/article/A-modern-JavaScript-router-in-100-lines-history-api-pushState-hash-url
-import { Injectable, isArray } from '@plumejs/core';
+import { Injectable } from '@plumejs/core';
 import { isNode } from "browser-or-node";
 import { InternalRouter } from './internalRouter.service';
 import { ICurrentRoute, Route } from "./router.model";
@@ -15,7 +15,7 @@ export class Router {
 	}
 	static registerRoutes(routes: Array<Route>) {
 		if (!isNode) {
-			if (isArray(routes)) {
+			if (Array.isArray(routes)) {
 				for (let route of routes) {
 					StaticRouter.formatRoute(route);
 				}

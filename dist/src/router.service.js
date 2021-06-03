@@ -1,4 +1,4 @@
-import { Injectable, isArray } from '@plumejs/core';
+import { Injectable } from '@plumejs/core';
 import { isNode } from "browser-or-node";
 import { InternalRouter } from './internalRouter.service';
 import { StaticRouter } from './staticRouter';
@@ -9,7 +9,7 @@ export class Router {
     }
     static registerRoutes(routes) {
         if (!isNode) {
-            if (isArray(routes)) {
+            if (Array.isArray(routes)) {
                 for (let route of routes) {
                     StaticRouter.formatRoute(route);
                 }

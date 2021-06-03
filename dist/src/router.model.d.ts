@@ -23,7 +23,4 @@ interface InternalRouteItem extends RouteItem {
     redirectTo?: string;
     canActivate: () => Observable<boolean> | Promise<boolean> | boolean;
 }
-declare type jsonObject = {
-    [index: string]: any;
-};
-export { Route, RouteItem, ICurrentRoute, InternalRouteItem, jsonObject };
+export { Route, RouteItem, ICurrentRoute, InternalRouteItem };

@@ -11,13 +11,9 @@ export class InternalRouter {
 	$templateSubscriber = new Subject();
 
 	constructor() {
-		window.addEventListener(
-			"hashchange",
-			() => {
-				this._registerOnHashChange();
-			},
-			false
-		);
+		window.addEventListener("hashchange", () => {
+			this._registerOnHashChange();
+		}, false);
 	}
 
 	private _registerOnHashChange() {
