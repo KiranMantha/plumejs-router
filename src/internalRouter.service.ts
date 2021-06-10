@@ -1,19 +1,39 @@
 import { Injectable, wrapIntoObservable } from "@plumejs/core";
-import { Subject } from "rxjs";
+import { fromEvent, Observable, Subject } from "rxjs";
 import { ICurrentRoute } from "./router.model";
 import { StaticRouter } from "./staticRouter";
 
 @Injectable()
 export class InternalRouter {
-	currentRoute: ICurrentRoute = {
+	_currentRoute: ICurrentRoute = {
 		params: {},
 	};
-	$templateSubscriber = new Subject();
+	_template = new Subject<string>();
 
 	constructor() {
-		window.addEventListener("hashchange", () => {
+		fromEvent(window, "hashchange").subscribe(() => {
 			this._registerOnHashChange();
-		}, false);
+		});
+	}
+
+	getTemplate(): Observable<string> {
+		return this._template.asObservable();
+	}
+
+	getCurrentRoute(): ICurrentRoute {
+		return this._currentRoute;
+	}
+
+	navigateTo(path: string = "") {
+		if (path) {
+			let windowHash = window.location.hash.replace(/^#/, "");
+			if (windowHash === path) {
+				this._navigateTo(path);
+			}
+			window.location.hash = "#" + path;
+		} else {
+			this._navigateTo(path);
+		}
 	}
 
 	private _registerOnHashChange() {
@@ -50,39 +70,23 @@ export class InternalRouter {
 				if (!val) return;
 				let _params = StaticRouter.checkParams(uParams, routeItem);
 				if (Object.keys(_params).length > 0 || path) {
-					this.currentRoute.params = _params;
+					this._currentRoute.params = _params;
 					if (!routeItem.IsRegistered) {
 						if (routeItem.TemplatePath) {
 							wrapIntoObservable(routeItem.TemplatePath()).subscribe(
 								(res: any) => {
 									routeItem.IsRegistered = true;
-									this.$templateSubscriber.next(routeItem.Template);
+									this._template.next(routeItem.Template);
 								}
 							);
 						}
 					} else {
-						this.$templateSubscriber.next(routeItem.Template);
+						this._template.next(routeItem.Template);
 					}
 				} else {
 					this.navigateTo(routeItem.redirectTo);
 				}
 			});
-		}
-	}
-
-	getCurrentRoute(): ICurrentRoute {
-		return this.currentRoute;
-	}
-
-	navigateTo(path: string = "") {
-		if (path) {
-			let windowHash = window.location.hash.replace(/^#/, "");
-			if (windowHash === path) {
-				this._navigateTo(path);
-			}
-			window.location.hash = "#" + path;
-		} else {
-			this._navigateTo(path);
 		}
 	}
 }

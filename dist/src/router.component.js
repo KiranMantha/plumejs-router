@@ -1,34 +1,35 @@
 import { Component, html } from "@plumejs/core";
+import { Subscription } from 'rxjs';
 import { InternalRouter } from "./internalRouter.service";
 const registerRouterComponent = () => {
     class RouterOutlet {
         constructor(router) {
             this.router = router;
-            this.template = "";
-            this.isRoutesAdded = false;
+            this._template = "";
+            this._subscriptions = new Subscription();
         }
         beforeMount() {
-            this.router.$templateSubscriber.subscribe((tmpl) => {
-                this.template = tmpl;
+            this._subscriptions.add(this.router.getTemplate().subscribe((tmpl) => {
+                this._template = tmpl;
                 this.update();
-            });
+            }));
         }
         mount() {
             let path = window.location.hash.replace(/^#/, '');
             this.router.navigateTo(path);
         }
         unmount() {
-            this.router.$templateSubscriber.unsubscribe();
+            this._subscriptions.unsubscribe();
         }
         render() {
-            if (!this.template) {
+            if (!this._template) {
                 return html `
 					<div></div>
 				`;
             }
             else {
-                const stringArray = [`${this.template}`];
-                stringArray.raw = [`${this.template}`];
+                const stringArray = [`${this._template}`];
+                stringArray.raw = [`${this._template}`];
                 return html(stringArray);
             }
         }

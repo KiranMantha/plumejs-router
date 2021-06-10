@@ -1,15 +1,33 @@
 import { Injectable, wrapIntoObservable } from "@plumejs/core";
-import { Subject } from "rxjs";
+import { fromEvent, Subject } from "rxjs";
 import { StaticRouter } from "./staticRouter";
 export class InternalRouter {
     constructor() {
-        this.currentRoute = {
+        this._currentRoute = {
             params: {},
         };
-        this.$templateSubscriber = new Subject();
-        window.addEventListener("hashchange", () => {
+        this._template = new Subject();
+        fromEvent(window, "hashchange").subscribe(() => {
             this._registerOnHashChange();
-        }, false);
+        });
+    }
+    getTemplate() {
+        return this._template.asObservable();
+    }
+    getCurrentRoute() {
+        return this._currentRoute;
+    }
+    navigateTo(path = "") {
+        if (path) {
+            let windowHash = window.location.hash.replace(/^#/, "");
+            if (windowHash === path) {
+                this._navigateTo(path);
+            }
+            window.location.hash = "#" + path;
+        }
+        else {
+            this._navigateTo(path);
+        }
     }
     _registerOnHashChange() {
         const path = window.location.hash.replace(/^#/, "");
@@ -44,38 +62,23 @@ export class InternalRouter {
                     return;
                 let _params = StaticRouter.checkParams(uParams, routeItem);
                 if (Object.keys(_params).length > 0 || path) {
-                    this.currentRoute.params = _params;
+                    this._currentRoute.params = _params;
                     if (!routeItem.IsRegistered) {
                         if (routeItem.TemplatePath) {
                             wrapIntoObservable(routeItem.TemplatePath()).subscribe((res) => {
                                 routeItem.IsRegistered = true;
-                                this.$templateSubscriber.next(routeItem.Template);
+                                this._template.next(routeItem.Template);
                             });
                         }
                     }
                     else {
-                        this.$templateSubscriber.next(routeItem.Template);
+                        this._template.next(routeItem.Template);
                     }
                 }
                 else {
                     this.navigateTo(routeItem.redirectTo);
                 }
             });
-        }
-    }
-    getCurrentRoute() {
-        return this.currentRoute;
-    }
-    navigateTo(path = "") {
-        if (path) {
-            let windowHash = window.location.hash.replace(/^#/, "");
-            if (windowHash === path) {
-                this._navigateTo(path);
-            }
-            window.location.hash = "#" + path;
-        }
-        else {
-            this._navigateTo(path);
         }
     }
 }

@@ -1,4 +1,5 @@
 import { Component, html } from "@plumejs/core";
+import { Subscription } from 'rxjs';
 import { InternalRouter } from "./internalRouter.service";
 
 const registerRouterComponent = () => {
@@ -7,18 +8,18 @@ const registerRouterComponent = () => {
 		useShadow: false
 	})
 	class RouterOutlet {
-		template = "";
 		update: Function;
-
-		isRoutesAdded = false;
+		private _template = "";
+		private _subscriptions = new Subscription();
 
 		constructor(private router: InternalRouter) { }
 
 		beforeMount() {
-			this.router.$templateSubscriber.subscribe((tmpl: string) => {
-				this.template = tmpl;
-				this.update();
-			});
+			this._subscriptions.add(
+				this.router.getTemplate().subscribe((tmpl: string) => {
+					this._template = tmpl;
+					this.update();
+				}));
 		}
 
 		mount() {
@@ -27,17 +28,17 @@ const registerRouterComponent = () => {
 		}
 
 		unmount() {
-			this.router.$templateSubscriber.unsubscribe();
+			this._subscriptions.unsubscribe();
 		}
 
 		render() {
-			if (!this.template) {
+			if (!this._template) {
 				return html`
 					<div></div>
 				`;
 			} else {
-				const stringArray = [`${this.template}`] as any;
-				stringArray.raw = [`${this.template}`];
+				const stringArray = [`${this._template}`] as any;
+				stringArray.raw = [`${this._template}`];
 				return html(stringArray);
 			}
 		}
