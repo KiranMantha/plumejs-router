@@ -1,4 +1,4 @@
-import { Component, html } from "@plumejs/core";
+import { Component, html, IHooks, Renderer } from "@plumejs/core";
 import { Subscription } from 'rxjs';
 import { InternalRouter } from "./internalRouter.service";
 
@@ -7,8 +7,8 @@ const registerRouterComponent = () => {
 		selector: "router-outlet",
 		useShadow: false
 	})
-	class RouterOutlet {
-		update: Function;
+	class RouterOutlet implements IHooks {
+		private renderer: Renderer;
 		private _template = "";
 		private _subscriptions = new Subscription();
 
@@ -18,7 +18,7 @@ const registerRouterComponent = () => {
 			this._subscriptions.add(
 				this.router.getTemplate().subscribe((tmpl: string) => {
 					this._template = tmpl;
-					this.update();
+					this.renderer.update();
 				}));
 		}
 

@@ -1,8 +1,8 @@
-import { Observable, Subject } from "rxjs";
+import { Observable } from "rxjs";
 import { ICurrentRoute } from "./router.model";
 export declare class InternalRouter {
-    _currentRoute: ICurrentRoute;
-    _template: Subject<string>;
+    private _currentRoute;
+    private _template;
     constructor();
     getTemplate(): Observable<string>;
     getCurrentRoute(): ICurrentRoute;

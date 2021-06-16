@@ -5,10 +5,10 @@ import { StaticRouter } from "./staticRouter";
 
 @Injectable()
 export class InternalRouter {
-	_currentRoute: ICurrentRoute = {
-		params: {},
+	private _currentRoute: ICurrentRoute = {
+		params: {}
 	};
-	_template = new Subject<string>();
+	private _template = new Subject<string>();
 
 	constructor() {
 		fromEvent(window, "hashchange").subscribe(() => {

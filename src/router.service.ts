@@ -7,12 +7,14 @@ import { StaticRouter } from './staticRouter';
 
 @Injectable()
 export class Router {
-	getCurrentRoute: () => ICurrentRoute;
-	navigateTo: (path: string) => void;
+	constructor(private internalRouter: InternalRouter) { }
 
-	constructor(internalRouter: InternalRouter) {
-		this.getCurrentRoute = internalRouter.getCurrentRoute.bind(internalRouter);
-		this.navigateTo = internalRouter.navigateTo.bind(internalRouter);
+	getCurrentRoute(): ICurrentRoute {
+		return this.internalRouter.getCurrentRoute();
+	}
+
+	navigateTo(path: string) {
+		this.internalRouter.navigateTo(path);
 	}
 
 	static registerRoutes(routes: Array<Route>) {

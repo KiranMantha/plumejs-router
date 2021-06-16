@@ -4,8 +4,13 @@ import { InternalRouter } from './internalRouter.service';
 import { StaticRouter } from './staticRouter';
 export class Router {
     constructor(internalRouter) {
-        this.getCurrentRoute = internalRouter.getCurrentRoute.bind(internalRouter);
-        this.navigateTo = internalRouter.navigateTo.bind(internalRouter);
+        this.internalRouter = internalRouter;
+    }
+    getCurrentRoute() {
+        return this.internalRouter.getCurrentRoute();
+    }
+    navigateTo(path) {
+        this.internalRouter.navigateTo(path);
     }
     static registerRoutes(routes) {
         if (!isNode) {

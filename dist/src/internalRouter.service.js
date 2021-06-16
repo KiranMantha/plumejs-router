@@ -4,7 +4,7 @@ import { StaticRouter } from "./staticRouter";
 export class InternalRouter {
     constructor() {
         this._currentRoute = {
-            params: {},
+            params: {}
         };
         this._template = new Subject();
         fromEvent(window, "hashchange").subscribe(() => {

@@ -11,7 +11,7 @@ const registerRouterComponent = () => {
         beforeMount() {
             this._subscriptions.add(this.router.getTemplate().subscribe((tmpl) => {
                 this._template = tmpl;
-                this.update();
+                this.renderer.update();
             }));
         }
         mount() {
