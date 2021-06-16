@@ -1,2 +1,2 @@
-export { registerRouterComponent } from './src/router.component';
+import './src/router.component';
 export { Router } from './src/router.service';

@@ -10,7 +10,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "rimraf dist && ttsc",
+    "build": "npm run lint && rimraf dist && ttsc",
+    "lint": "eslint . --ext .ts --fix",
     "patch-update": "npm version patch",
     "tag": "git push --follow-tags",
     "tag-release": "npm run patch-update && npm run tag"
@@ -35,6 +36,11 @@
   },
   "devDependencies": {
     "@types/node": "^14.0.13",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "eslint": "^7.28.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "prettier": "^2.3.1",
     "rimraf": "^3.0.2",
     "ttypescript": "^1.5.12",
     "typescript": "^4.2.4"
