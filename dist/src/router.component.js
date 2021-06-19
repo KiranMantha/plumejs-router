@@ -1,4 +1,4 @@
-import { Component, html } from '@plumejs/core';
+import { Component, html, Renderer } from '@plumejs/core';
 import { Subscription } from 'rxjs';
 import { InternalRouter } from './internalRouter.service';
 class RouterOutlet {
@@ -6,8 +6,9 @@ class RouterOutlet {
     renderer;
     _template = '';
     _subscriptions = new Subscription();
-    constructor(router) {
+    constructor(router, renderer) {
         this.router = router;
+        this.renderer = renderer;
     }
     beforeMount() {
         this._subscriptions.add(this.router.getTemplate().subscribe((tmpl) => {
@@ -36,4 +37,4 @@ class RouterOutlet {
 Component({
   selector: 'router-outlet',
   useShadow: false
-})(["InternalRouter", RouterOutlet]);
+})(["InternalRouter", "Renderer", RouterOutlet]);

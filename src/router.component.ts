@@ -7,11 +7,10 @@ import { InternalRouter } from './internalRouter.service';
   useShadow: false
 })
 class RouterOutlet implements IHooks {
-  private renderer: Renderer;
   private _template = '';
   private _subscriptions = new Subscription();
 
-  constructor(private router: InternalRouter) {}
+  constructor(private router: InternalRouter, private renderer: Renderer) {}
 
   beforeMount() {
     this._subscriptions.add(
