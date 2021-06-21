@@ -31,12 +31,12 @@ class RouterOutlet implements IHooks {
   }
 
   render() {
-    if (!this._template) {
-      return html` <div></div> `;
-    } else {
+    if (this._template) {
       const stringArray = [`${this._template}`] as any;
       stringArray.raw = [`${this._template}`];
       return html(stringArray);
+    } else {
+      return html``;
     }
   }
 }

@@ -24,13 +24,13 @@ class RouterOutlet {
         this._subscriptions.unsubscribe();
     }
     render() {
-        if (!this._template) {
-            return html ` <div></div> `;
-        }
-        else {
+        if (this._template) {
             const stringArray = [`${this._template}`];
             stringArray.raw = [`${this._template}`];
             return html(stringArray);
+        }
+        else {
+            return html ``;
         }
     }
 }
