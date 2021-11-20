@@ -1,7 +1,8 @@
+import { __decorate, __metadata } from "tslib";
 import { Component, html, Renderer } from '@plumejs/core';
 import { Subscription } from 'rxjs';
 import { InternalRouter } from './internalRouter.service';
-class RouterOutlet {
+let RouterOutlet = class RouterOutlet {
     router;
     renderer;
     _template = '';
@@ -33,8 +34,11 @@ class RouterOutlet {
             return html ``;
         }
     }
-}
-Component({
-  selector: 'router-outlet',
-  useShadow: false
-})(["InternalRouter", "Renderer", RouterOutlet]);
+};
+RouterOutlet = __decorate([
+    Component({
+        selector: 'router-outlet',
+        useShadow: false
+    }),
+    __metadata("design:paramtypes", [InternalRouter, Renderer])
+], RouterOutlet);

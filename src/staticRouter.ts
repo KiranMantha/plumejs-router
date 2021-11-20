@@ -1,11 +1,10 @@
-import { jsonObject } from '@plumejs/core';
 import { InternalRouteItem, Route, RouteItem } from './router.model';
 
 export class StaticRouter {
   static routList: Array<InternalRouteItem> = [];
   static checkParams(up: Array<string>, r: RouteItem) {
     let pmc = 0;
-    const po: jsonObject = {},
+    const po: Record<string, any> = {},
       pc = r.ParamCount;
 
     for (let i = 0; i < up.length; i++) {
