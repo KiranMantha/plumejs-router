@@ -1,4 +1,7 @@
-export class StaticRouter {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.StaticRouter = void 0;
+class StaticRouter {
     static routList = [];
     static checkParams(up, r) {
         let pmc = 0;
@@ -52,3 +55,4 @@ export class StaticRouter {
         StaticRouter.routList.push(obj);
     }
 }
+exports.StaticRouter = StaticRouter;

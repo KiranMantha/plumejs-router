@@ -1,8 +1,11 @@
-import { __decorate, __metadata } from "tslib";
-import { Injectable } from '@plumejs/core';
-import { isNode } from 'browser-or-node';
-import { InternalRouter } from './internalRouter.service';
-import { StaticRouter } from './staticRouter';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Router = void 0;
+const tslib_1 = require("tslib");
+const core_1 = require("@plumejs/core");
+const browser_or_node_1 = require("browser-or-node");
+const internalRouter_service_1 = require("./internalRouter.service");
+const staticRouter_1 = require("./staticRouter");
 let Router = class Router {
     internalRouter;
     constructor(internalRouter) {
@@ -15,10 +18,10 @@ let Router = class Router {
         this.internalRouter.navigateTo(path);
     }
     static registerRoutes(routes) {
-        if (!isNode) {
+        if (!browser_or_node_1.isNode) {
             if (Array.isArray(routes)) {
                 for (const route of routes) {
-                    StaticRouter.formatRoute(route);
+                    staticRouter_1.StaticRouter.formatRoute(route);
                 }
             }
             else {
@@ -27,8 +30,8 @@ let Router = class Router {
         }
     }
 };
-Router = __decorate([
-    Injectable(),
-    __metadata("design:paramtypes", [InternalRouter])
+Router = (0, tslib_1.__decorate)([
+    (0, core_1.Injectable)(),
+    (0, tslib_1.__metadata)("design:paramtypes", [internalRouter_service_1.InternalRouter])
 ], Router);
-export { Router };
+exports.Router = Router;
