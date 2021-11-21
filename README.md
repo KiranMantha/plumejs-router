@@ -8,10 +8,7 @@
 
 ```
   import { Component, html } from '@plumejs/core';
-  import { Router, Route, registerRouterComponent } from '@plumejs/router';
-
-  // call this in root component only.
-  registerRouterComponent();
+  import { Router, Route } from '@plumejs/router';
 
   @Component({
     selector: 'app-comp',

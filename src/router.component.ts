@@ -3,8 +3,7 @@ import { Subscription } from 'rxjs';
 import { InternalRouter } from './internalRouter.service';
 
 @Component({
-  selector: 'router-outlet',
-  useShadow: false
+  selector: 'router-outlet'
 })
 class RouterOutlet implements IHooks {
   private _template = '';
