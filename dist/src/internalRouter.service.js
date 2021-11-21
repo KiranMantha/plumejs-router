@@ -7,7 +7,9 @@ const rxjs_1 = require("rxjs");
 const staticRouter_1 = require("./staticRouter");
 let InternalRouter = class InternalRouter {
     _currentRoute = {
-        params: {}
+        path: '',
+        params: {},
+        state: {}
     };
     _template = new rxjs_1.Subject();
     constructor() {
@@ -21,21 +23,21 @@ let InternalRouter = class InternalRouter {
     getCurrentRoute() {
         return this._currentRoute;
     }
-    navigateTo(path = '') {
+    navigateTo(path = '', state) {
         if (path) {
             const windowHash = window.location.hash.replace(/^#/, '');
             if (windowHash === path) {
-                this._navigateTo(path);
+                this._navigateTo(path, state);
             }
             window.location.hash = '#' + path;
         }
         else {
-            this._navigateTo(path);
+            this._navigateTo(path, state);
         }
     }
     _registerOnHashChange() {
         const path = window.location.hash.replace(/^#/, '');
-        this._navigateTo(path);
+        this._navigateTo(path, null);
     }
     _routeMatcher(route, path) {
         if (route) {
@@ -46,7 +48,7 @@ let InternalRouter = class InternalRouter {
             return route === path;
         }
     }
-    _navigateTo(path) {
+    _navigateTo(path, state) {
         const uParams = path.split('/').filter((h) => {
             return h.length > 0;
         });
@@ -60,6 +62,8 @@ let InternalRouter = class InternalRouter {
         });
         const routeItem = routeArr.length > 0 ? routeArr[0] : null;
         if (routeItem) {
+            this._currentRoute.path = path;
+            this._currentRoute.state = { ...(state || {}) };
             (0, core_1.wrapIntoObservable)(routeItem.canActivate()).subscribe((val) => {
                 if (!val)
                     return;
@@ -79,7 +83,7 @@ let InternalRouter = class InternalRouter {
                     }
                 }
                 else {
-                    this.navigateTo(routeItem.redirectTo);
+                    this.navigateTo(routeItem.redirectTo, state);
                 }
             });
         }

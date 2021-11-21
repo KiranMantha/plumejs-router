@@ -6,7 +6,7 @@ export declare class InternalRouter {
     constructor();
     getTemplate(): Observable<string>;
     getCurrentRoute(): ICurrentRoute;
-    navigateTo(path?: string): void;
+    navigateTo(path: string, state: Record<string, any>): void;
     private _registerOnHashChange;
     private _routeMatcher;
     private _navigateTo;

@@ -1,8 +1,10 @@
 import { Observable } from 'rxjs';
 interface ICurrentRoute {
+    path: string;
     params: {
         [key: string]: string | number | boolean;
     };
+    state: Record<string, any>;
 }
 interface RouteItem {
     Params: any;

@@ -22,7 +22,7 @@ class RouterOutlet implements IHooks {
 
   mount() {
     const path = window.location.hash.replace(/^#/, '');
-    this.router.navigateTo(path);
+    this.router.navigateTo(path, null);
   }
 
   unmount() {

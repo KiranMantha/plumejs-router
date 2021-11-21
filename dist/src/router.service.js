@@ -14,8 +14,8 @@ let Router = class Router {
     getCurrentRoute() {
         return this.internalRouter.getCurrentRoute();
     }
-    navigateTo(path) {
-        this.internalRouter.navigateTo(path);
+    navigateTo(path, state) {
+        this.internalRouter.navigateTo(path, state);
     }
     static registerRoutes(routes) {
         if (!browser_or_node_1.isNode) {

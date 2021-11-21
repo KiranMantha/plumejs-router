@@ -21,7 +21,7 @@ let RouterOutlet = class RouterOutlet {
     }
     mount() {
         const path = window.location.hash.replace(/^#/, '');
-        this.router.navigateTo(path);
+        this.router.navigateTo(path, null);
     }
     unmount() {
         this._subscriptions.unsubscribe();

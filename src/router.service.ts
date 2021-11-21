@@ -13,8 +13,8 @@ export class Router {
     return this.internalRouter.getCurrentRoute();
   }
 
-  navigateTo(path: string) {
-    this.internalRouter.navigateTo(path);
+  navigateTo(path: string, state?: Record<string, any>) {
+    this.internalRouter.navigateTo(path, state);
   }
 
   static registerRoutes(routes: Array<Route>) {

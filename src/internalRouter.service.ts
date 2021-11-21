@@ -6,7 +6,9 @@ import { StaticRouter } from './staticRouter';
 @Injectable()
 export class InternalRouter {
   private _currentRoute: ICurrentRoute = {
-    params: {}
+    path: '',
+    params: {},
+    state: {}
   };
   private _template = new Subject<string>();
 
@@ -24,21 +26,21 @@ export class InternalRouter {
     return this._currentRoute;
   }
 
-  navigateTo(path = '') {
+  navigateTo(path = '', state: Record<string, any>) {
     if (path) {
       const windowHash = window.location.hash.replace(/^#/, '');
       if (windowHash === path) {
-        this._navigateTo(path);
+        this._navigateTo(path, state);
       }
       window.location.hash = '#' + path;
     } else {
-      this._navigateTo(path);
+      this._navigateTo(path, state);
     }
   }
 
   private _registerOnHashChange() {
     const path = window.location.hash.replace(/^#/, '');
-    this._navigateTo(path);
+    this._navigateTo(path, null);
   }
 
   private _routeMatcher(route: string, path: string) {
@@ -50,7 +52,7 @@ export class InternalRouter {
     }
   }
 
-  private _navigateTo(path: string) {
+  private _navigateTo(path: string, state: Record<string, any>) {
     const uParams = path.split('/').filter((h) => {
       return h.length > 0;
     });
@@ -63,6 +65,8 @@ export class InternalRouter {
     });
     const routeItem = routeArr.length > 0 ? routeArr[0] : null;
     if (routeItem) {
+      this._currentRoute.path = path;
+      this._currentRoute.state = { ...(state || {}) };
       wrapIntoObservable(routeItem.canActivate()).subscribe((val: boolean) => {
         if (!val) return;
         const _params = StaticRouter.checkParams(uParams, routeItem);
@@ -79,7 +83,7 @@ export class InternalRouter {
             this._template.next(routeItem.Template);
           }
         } else {
-          this.navigateTo(routeItem.redirectTo);
+          this.navigateTo(routeItem.redirectTo, state);
         }
       });
     }
