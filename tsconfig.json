@@ -1,11 +1,8 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "ESNext",
-    "lib": [
-      "dom",
-      "ESNext"
-    ],
+    "module": "commonjs",
+    "lib": ["dom", "ESNext"],
     "moduleResolution": "node",
     "declaration": true,
     "inlineSourceMap": false,
@@ -18,13 +15,14 @@
     "emitDecoratorMetadata": true,
     "importHelpers": true,
     "noEmitOnError": true,
-    "typeRoots": [
-      "node_modules/@types"
+    "typeRoots": ["node_modules/@types"],
+    "plugins": [
+      {
+        "transform": "./ast-transformer.ts",
+        "type": "raw",
+        "after": false
+      }
     ]
   },
-  "exclude": [
-    "__tests__",
-    "dist",
-    "node_modules"
-  ]
+  "exclude": ["__tests__", "dist", "node_modules", "ast-transformer.ts"]
 }

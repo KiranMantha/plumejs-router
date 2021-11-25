@@ -1,48 +1,41 @@
-import { Component, html } from "@plumejs/core";
-import { InternalRouter } from "./internalRouter.service";
+import { Component, html, IHooks, Renderer } from '@plumejs/core';
+import { Subscription } from 'rxjs';
+import { InternalRouter } from './internalRouter.service';
 
-const registerRouterComponent = () => {
-	@Component({
-		selector: "router-outlet",
-		useShadow: false
-	})
-	class RouterOutlet {
-		template = "";
-		update: Function;
+@Component({
+  selector: 'router-outlet'
+})
+class RouterOutlet implements IHooks {
+  private _template = '';
+  private _subscriptions = new Subscription();
 
-		isRoutesAdded = false;
+  constructor(private router: InternalRouter, private renderer: Renderer) {}
 
-		constructor(private router: InternalRouter) { }
+  beforeMount() {
+    this._subscriptions.add(
+      this.router.getTemplate().subscribe((tmpl: string) => {
+        this._template = tmpl;
+        this.renderer.update();
+      })
+    );
+  }
 
-		beforeMount() {
-			this.router.$templateSubscriber.subscribe((tmpl: string) => {
-				this.template = tmpl;
-				this.update();
-			});
-		}
+  mount() {
+    const path = window.location.hash.replace(/^#/, '');
+    this.router.navigateTo(path, null);
+  }
 
-		mount() {
-			let path = window.location.hash.replace(/^#/, '');
-			this.router.navigateTo(path);
-		}
+  unmount() {
+    this._subscriptions.unsubscribe();
+  }
 
-		unmount() {
-			this.router.$templateSubscriber.unsubscribe();
-		}
-
-		render() {
-			if (!this.template) {
-				return html`
-					<div></div>
-				`;
-			} else {
-				const stringArray = [`${this.template}`] as any;
-				stringArray.raw = [`${this.template}`];
-				return html(stringArray);
-			}
-		}
-	}
-};
-
-export { registerRouterComponent };
-
+  render() {
+    if (this._template) {
+      const stringArray = [`${this._template}`] as any;
+      stringArray.raw = [`${this._template}`];
+      return html(stringArray);
+    } else {
+      return html``;
+    }
+  }
+}

@@ -1,8 +1,9 @@
 import { InternalRouter } from './internalRouter.service';
-import { ICurrentRoute, Route } from "./router.model";
+import { ICurrentRoute, Route } from './router.model';
 export declare class Router {
-    getCurrentRoute: () => ICurrentRoute;
-    navigateTo: (path: string) => void;
+    private internalRouter;
     constructor(internalRouter: InternalRouter);
+    getCurrentRoute(): ICurrentRoute;
+    navigateTo(path: string, state?: Record<string, any>): void;
     static registerRoutes(routes: Array<Route>): void;
 }

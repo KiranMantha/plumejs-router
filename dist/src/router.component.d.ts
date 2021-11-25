@@ -1,2 +1,1 @@
-declare const registerRouterComponent: () => void;
-export { registerRouterComponent };
+export {};
