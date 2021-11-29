@@ -1,3 +1,7 @@
+[![GitHub contributors](https://img.shields.io/github/contributors/kiranmantha/plumejs-router)](https://GitHub.com/KiranMantha/plumejs-router/graphs/contributors/) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://GitHub.com/KiranMantha/plumejs-router/pulls)
+
+[![npm](https://img.shields.io/npm/dw/@plumejs/router)](https://www.npmjs.com/package/@plumejs/router) [![npm](https://img.shields.io/npm/v/@plumejs/router)](https://www.npmjs.com/package/@plumejs/router) [![Dependencies](https://img.shields.io/badge/Dependencies-%40plumejs%2Fcore-green)](https://GitHub.com/KiranMantha/plumejs)
+
 # PlumeJs Router
 
 [PlumeJs](https://github.com/kiranmantha/plumejs) uses hash-based Routing. It uses dynamic imports to chunk out route specific logic which reduces main bundle size significantly. Routing can be implemented as follows:
@@ -6,7 +10,7 @@
 
 2. Declare routes array and register router component as below
 
-```
+```typescript
   import { Component, html } from '@plumejs/core';
   import { Router, Route } from '@plumejs/router';
 
@@ -60,27 +64,27 @@ That's it. Now we have the routing in our application.
 
 To navigate from one route to other from a component:
 
-```
-  import { Component } from '@plumejs/core';
-  import { Router } from '@plumejs/router';
+```typescript
+import { Component } from '@plumejs/core';
+import { Router } from '@plumejs/router';
 
-  @Component({
-    selector: '<your-selector></your-selector>'
-  })
-  class YourClass {
-    constructor(private router: Router){}
+@Component({
+  selector: 'your-selector'
+})
+class YourClass {
+  constructor(private router: Router) {}
 
-    onclick() {
-      this.router.navigateTo('/your-route');
-    }
+  onclick() {
+    this.router.navigateTo('/your-route');
   }
+}
 ```
 
 # Accessing Route Params
 
 To Access current route parameters
 
-```
+```typescript
   route = [{
     path: '/details/:id'
     ....
@@ -90,5 +94,39 @@ To Access current route parameters
   If url is /details/123 then:
 
   const currentRoute = this.router.getCurrentRoute();
+  const path = currentRoute.path; // returns '/details'
   const id = currentRoute.params.id; /// returns 123
+```
+
+# Pass state in route
+
+There may be usecases where devs need to pass complex objects without using route params. This provision is added in new router package. to pass and read state:
+
+```typescript
+import { Component } from '@plumejs/core';
+import { Router } from '@plumejs/router';
+
+@Component({
+  selector: 'your-selector'
+})
+class YourClass {
+  constructor(private router: Router) {}
+
+  onclick() {
+    this.router.navigateTo('/your-route', { <some-complex-object> });
+  }
+}
+
+//in other route component
+@Component({
+  selector: 'other-comp'
+})
+class OtherComponent{
+  constructor(private router: Router) {}
+
+  mount() {
+    const currentRoute = this.router.getCurrentRoute();
+    const state = currentRoute.state; // returns empty obj by default.
+  }
+}
 ```
