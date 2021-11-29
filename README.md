@@ -125,6 +125,7 @@ class OtherComponent{
   constructor(private router: Router) {}
 
   mount() {
+    const currentRoute = this.router.getCurrentRoute();
     const state = currentRoute.state; // returns empty obj by default.
   }
 }
