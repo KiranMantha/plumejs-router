@@ -6,7 +6,7 @@
 
 2. Declare routes array and register router component as below
 
-```
+```typescript
   import { Component, html } from '@plumejs/core';
   import { Router, Route } from '@plumejs/router';
 
@@ -60,27 +60,27 @@ That's it. Now we have the routing in our application.
 
 To navigate from one route to other from a component:
 
-```
-  import { Component } from '@plumejs/core';
-  import { Router } from '@plumejs/router';
+```typescript
+import { Component } from '@plumejs/core';
+import { Router } from '@plumejs/router';
 
-  @Component({
-    selector: '<your-selector></your-selector>'
-  })
-  class YourClass {
-    constructor(private router: Router){}
+@Component({
+  selector: 'your-selector'
+})
+class YourClass {
+  constructor(private router: Router) {}
 
-    onclick() {
-      this.router.navigateTo('/your-route');
-    }
+  onclick() {
+    this.router.navigateTo('/your-route');
   }
+}
 ```
 
 # Accessing Route Params
 
 To Access current route parameters
 
-```
+```typescript
   route = [{
     path: '/details/:id'
     ....
@@ -90,5 +90,38 @@ To Access current route parameters
   If url is /details/123 then:
 
   const currentRoute = this.router.getCurrentRoute();
+  const path = currentRoute.path; // returns '/details'
   const id = currentRoute.params.id; /// returns 123
+```
+
+# Pass state in route
+
+There may be usecases where devs need to pass complex objects without using route params. This provision is added in new router package. to pass and read state:
+
+```typescript
+import { Component } from '@plumejs/core';
+import { Router } from '@plumejs/router';
+
+@Component({
+  selector: 'your-selector'
+})
+class YourClass {
+  constructor(private router: Router) {}
+
+  onclick() {
+    this.router.navigateTo('/your-route', { <some-complex-object> });
+  }
+}
+
+//in other route component
+@Component({
+  selector: 'other-comp'
+})
+class OtherComponent{
+  constructor(private router: Router) {}
+
+  mount() {
+    const state = currentRoute.state; // returns empty obj by default.
+  }
+}
 ```
