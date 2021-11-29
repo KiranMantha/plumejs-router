@@ -1,6 +1,6 @@
 {
   "name": "@plumejs/router",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A routing mechanism for PlumeJs application.",
   "main": "./dist/index.js",
   "files": [
