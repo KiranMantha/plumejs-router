@@ -130,3 +130,14 @@ class OtherComponent{
   }
 }
 ```
+
+# Preloading all routes
+
+It is very easy to enable preloading of all mentioned routes. All we need to do is:
+
+```typescript
+...
+Router.registerRoutes(this.routes, true);
+```
+
+when declaring the routes. By default this is not enabled. This feature will helps in preloading all route chuncks after main route got rendered. With this, any route content is displayed at near instant.
