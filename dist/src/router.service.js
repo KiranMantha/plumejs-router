@@ -17,12 +17,13 @@ let Router = class Router {
     navigateTo(path, state) {
         this.internalRouter.navigateTo(path, state);
     }
-    static registerRoutes(routes) {
+    static registerRoutes(routes, preloadAllRoutes = false) {
         if (!browser_or_node_1.isNode) {
             if (Array.isArray(routes)) {
                 for (const route of routes) {
                     staticRouter_1.StaticRouter.formatRoute(route);
                 }
+                preloadAllRoutes && staticRouter_1.StaticRouter.preloadRoutes();
             }
             else {
                 throw Error('router.addRoutes: the parameter must be an array');

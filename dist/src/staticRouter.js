@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StaticRouter = void 0;
 class StaticRouter {
-    static routList = [];
+    static routeList = [];
     static checkParams(up, r) {
         let pmc = 0;
         const po = {}, pc = r.ParamCount;
@@ -52,7 +52,12 @@ class StaticRouter {
         if (r.canActivate)
             obj.canActivate = r.canActivate;
         obj.ParamCount = StaticRouter.getParamCount(obj.Params);
-        StaticRouter.routList.push(obj);
+        StaticRouter.routeList.push(obj);
+    }
+    static preloadRoutes() {
+        for (const route of StaticRouter.routeList) {
+            route.TemplatePath && route.TemplatePath();
+        }
     }
 }
 exports.StaticRouter = StaticRouter;

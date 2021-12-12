@@ -1,7 +1,7 @@
 import { InternalRouteItem, Route, RouteItem } from './router.model';
 
 export class StaticRouter {
-  static routList: Array<InternalRouteItem> = [];
+  static routeList: Array<InternalRouteItem> = [];
   static checkParams(up: Array<string>, r: RouteItem) {
     let pmc = 0;
     const po: Record<string, any> = {},
@@ -53,6 +53,12 @@ export class StaticRouter {
     }
     if (r.canActivate) obj.canActivate = r.canActivate;
     obj.ParamCount = StaticRouter.getParamCount(obj.Params);
-    StaticRouter.routList.push(obj);
+    StaticRouter.routeList.push(obj);
+  }
+
+  static preloadRoutes() {
+    for (const route of StaticRouter.routeList) {
+      route.TemplatePath && route.TemplatePath();
+    }
   }
 }

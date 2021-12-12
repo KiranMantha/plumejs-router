@@ -56,7 +56,7 @@ export class InternalRouter {
     const uParams = path.split('/').filter((h) => {
       return h.length > 0;
     });
-    const routeArr = StaticRouter.routList.filter((route) => {
+    const routeArr = StaticRouter.routeList.filter((route) => {
       if (route.Params.length === uParams.length && this._routeMatcher(route.Url, path)) {
         return route;
       } else if (route.Url === path) {
