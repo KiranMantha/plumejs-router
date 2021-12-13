@@ -1,14 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const tslib_1 = require("tslib");
-const core_1 = require("@plumejs/core");
-const rxjs_1 = require("rxjs");
-const internalRouter_service_1 = require("./internalRouter.service");
+import { __decorate, __metadata } from "tslib";
+import { Component, html, Renderer } from '@plumejs/core';
+import { Subscription } from 'rxjs';
+import { InternalRouter } from './internalRouter.service';
 let RouterOutlet = class RouterOutlet {
     router;
     renderer;
     _template = '';
-    _subscriptions = new rxjs_1.Subscription();
+    _subscriptions = new Subscription();
     constructor(router, renderer) {
         this.router = router;
         this.renderer = renderer;
@@ -30,16 +28,16 @@ let RouterOutlet = class RouterOutlet {
         if (this._template) {
             const stringArray = [`${this._template}`];
             stringArray.raw = [`${this._template}`];
-            return (0, core_1.html)(stringArray);
+            return html(stringArray);
         }
         else {
-            return (0, core_1.html) ``;
+            return html ``;
         }
     }
 };
-RouterOutlet = (0, tslib_1.__decorate)([
-    (0, core_1.Component)({
+RouterOutlet = __decorate([
+    Component({
         selector: 'router-outlet'
     }),
-    (0, tslib_1.__metadata)("design:paramtypes", [internalRouter_service_1.InternalRouter, core_1.Renderer])
+    __metadata("design:paramtypes", [InternalRouter, Renderer])
 ], RouterOutlet);

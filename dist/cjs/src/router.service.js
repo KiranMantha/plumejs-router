@@ -7,7 +7,6 @@ const browser_or_node_1 = require("browser-or-node");
 const internalRouter_service_1 = require("./internalRouter.service");
 const staticRouter_1 = require("./staticRouter");
 let Router = class Router {
-    internalRouter;
     constructor(internalRouter) {
         this.internalRouter = internalRouter;
     }

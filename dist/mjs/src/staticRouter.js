@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.StaticRouter = void 0;
-class StaticRouter {
+export class StaticRouter {
     static routeList = [];
     static checkParams(up, r) {
         let pmc = 0;
@@ -60,4 +57,3 @@ class StaticRouter {
         }
     }
 }
-exports.StaticRouter = StaticRouter;
