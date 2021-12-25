@@ -3,7 +3,9 @@ import { ICurrentRoute } from './router.model';
 export declare class InternalRouter {
     private _currentRoute;
     private _template;
-    constructor();
+    private _unSubscribeHashEvent;
+    startHashChange(): void;
+    stopHashChange(): void;
     getTemplate(): Observable<string>;
     getCurrentRoute(): ICurrentRoute;
     navigateTo(path: string, state: Record<string, any>): void;

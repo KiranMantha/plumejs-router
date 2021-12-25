@@ -1,4 +1,4 @@
-import { __decorate, __metadata } from "tslib";
+import { __decorate } from "tslib";
 import { Injectable, wrapIntoObservable } from '@plumejs/core';
 import { fromEvent, Subject } from 'rxjs';
 import { StaticRouter } from './staticRouter';
@@ -9,10 +9,14 @@ let InternalRouter = class InternalRouter {
         state: {}
     };
     _template = new Subject();
-    constructor() {
-        fromEvent(window, 'hashchange').subscribe(() => {
+    _unSubscribeHashEvent;
+    startHashChange() {
+        this._unSubscribeHashEvent = fromEvent(window, 'hashchange').subscribe(() => {
             this._registerOnHashChange();
         });
+    }
+    stopHashChange() {
+        this._unSubscribeHashEvent();
     }
     getTemplate() {
         return this._template.asObservable();
@@ -87,7 +91,6 @@ let InternalRouter = class InternalRouter {
     }
 };
 InternalRouter = __decorate([
-    Injectable(),
-    __metadata("design:paramtypes", [])
+    Injectable()
 ], InternalRouter);
 export { InternalRouter };

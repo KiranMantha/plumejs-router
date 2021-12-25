@@ -3,26 +3,28 @@ import { Component, html, Renderer } from '@plumejs/core';
 import { Subscription } from 'rxjs';
 import { InternalRouter } from './internalRouter.service';
 let RouterOutlet = class RouterOutlet {
-    router;
+    internalRouterSrvc;
     renderer;
     _template = '';
     _subscriptions = new Subscription();
-    constructor(router, renderer) {
-        this.router = router;
+    constructor(internalRouterSrvc, renderer) {
+        this.internalRouterSrvc = internalRouterSrvc;
         this.renderer = renderer;
     }
     beforeMount() {
-        this._subscriptions.add(this.router.getTemplate().subscribe((tmpl) => {
+        this._subscriptions.add(this.internalRouterSrvc.getTemplate().subscribe((tmpl) => {
             this._template = tmpl;
             this.renderer.update();
         }));
+        this.internalRouterSrvc.startHashChange();
     }
     mount() {
         const path = window.location.hash.replace(/^#/, '');
-        this.router.navigateTo(path, null);
+        this.internalRouterSrvc.navigateTo(path, null);
     }
     unmount() {
         this._subscriptions.unsubscribe();
+        this.internalRouterSrvc.stopHashChange();
     }
     render() {
         if (this._template) {

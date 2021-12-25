@@ -13,9 +13,14 @@ let InternalRouter = class InternalRouter {
             state: {}
         };
         this._template = new rxjs_1.Subject();
-        (0, rxjs_1.fromEvent)(window, 'hashchange').subscribe(() => {
+    }
+    startHashChange() {
+        this._unSubscribeHashEvent = (0, rxjs_1.fromEvent)(window, 'hashchange').subscribe(() => {
             this._registerOnHashChange();
         });
+    }
+    stopHashChange() {
+        this._unSubscribeHashEvent();
     }
     getTemplate() {
         return this._template.asObservable();
@@ -90,7 +95,6 @@ let InternalRouter = class InternalRouter {
     }
 };
 InternalRouter = (0, tslib_1.__decorate)([
-    (0, core_1.Injectable)(),
-    (0, tslib_1.__metadata)("design:paramtypes", [])
+    (0, core_1.Injectable)()
 ], InternalRouter);
 exports.InternalRouter = InternalRouter;

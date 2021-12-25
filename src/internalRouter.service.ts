@@ -11,11 +11,16 @@ export class InternalRouter {
     state: {}
   };
   private _template = new Subject<string>();
+  private _unSubscribeHashEvent;
 
-  constructor() {
-    fromEvent(window, 'hashchange').subscribe(() => {
+  startHashChange() {
+    this._unSubscribeHashEvent = fromEvent(window, 'hashchange').subscribe(() => {
       this._registerOnHashChange();
     });
+  }
+
+  stopHashChange() {
+    this._unSubscribeHashEvent();
   }
 
   getTemplate(): Observable<string> {

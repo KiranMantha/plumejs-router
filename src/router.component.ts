@@ -9,24 +9,26 @@ class RouterOutlet implements IHooks {
   private _template = '';
   private _subscriptions = new Subscription();
 
-  constructor(private router: InternalRouter, private renderer: Renderer) {}
+  constructor(private internalRouterSrvc: InternalRouter, private renderer: Renderer) {}
 
   beforeMount() {
     this._subscriptions.add(
-      this.router.getTemplate().subscribe((tmpl: string) => {
+      this.internalRouterSrvc.getTemplate().subscribe((tmpl: string) => {
         this._template = tmpl;
         this.renderer.update();
       })
     );
+    this.internalRouterSrvc.startHashChange();
   }
 
   mount() {
     const path = window.location.hash.replace(/^#/, '');
-    this.router.navigateTo(path, null);
+    this.internalRouterSrvc.navigateTo(path, null);
   }
 
   unmount() {
     this._subscriptions.unsubscribe();
+    this.internalRouterSrvc.stopHashChange();
   }
 
   render() {

@@ -5,24 +5,26 @@ const core_1 = require("@plumejs/core");
 const rxjs_1 = require("rxjs");
 const internalRouter_service_1 = require("./internalRouter.service");
 let RouterOutlet = class RouterOutlet {
-    constructor(router, renderer) {
-        this.router = router;
+    constructor(internalRouterSrvc, renderer) {
+        this.internalRouterSrvc = internalRouterSrvc;
         this.renderer = renderer;
         this._template = '';
         this._subscriptions = new rxjs_1.Subscription();
     }
     beforeMount() {
-        this._subscriptions.add(this.router.getTemplate().subscribe((tmpl) => {
+        this._subscriptions.add(this.internalRouterSrvc.getTemplate().subscribe((tmpl) => {
             this._template = tmpl;
             this.renderer.update();
         }));
+        this.internalRouterSrvc.startHashChange();
     }
     mount() {
         const path = window.location.hash.replace(/^#/, '');
-        this.router.navigateTo(path, null);
+        this.internalRouterSrvc.navigateTo(path, null);
     }
     unmount() {
         this._subscriptions.unsubscribe();
+        this.internalRouterSrvc.stopHashChange();
     }
     render() {
         if (this._template) {
