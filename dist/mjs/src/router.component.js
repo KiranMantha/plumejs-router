@@ -1,21 +1,20 @@
 import { __decorate, __metadata } from "tslib";
 import { Component, html, Renderer } from '@plumejs/core';
-import { Subscription } from 'rxjs';
 import { InternalRouter } from './internalRouter.service';
 let RouterOutlet = class RouterOutlet {
     internalRouterSrvc;
     renderer;
     _template = '';
-    _subscriptions = new Subscription();
+    _templateSubscription;
     constructor(internalRouterSrvc, renderer) {
         this.internalRouterSrvc = internalRouterSrvc;
         this.renderer = renderer;
     }
     beforeMount() {
-        this._subscriptions.add(this.internalRouterSrvc.getTemplate().subscribe((tmpl) => {
+        this._templateSubscription = this.internalRouterSrvc.getTemplate().subscribe((tmpl) => {
             this._template = tmpl;
             this.renderer.update();
-        }));
+        });
         this.internalRouterSrvc.startHashChange();
     }
     mount() {
@@ -23,7 +22,7 @@ let RouterOutlet = class RouterOutlet {
         this.internalRouterSrvc.navigateTo(path, null);
     }
     unmount() {
-        this._subscriptions.unsubscribe();
+        this._templateSubscription();
         this.internalRouterSrvc.stopHashChange();
     }
     render() {

@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import { ICurrentRoute } from './router.model';
 export declare class InternalRouter {
     private _currentRoute;
@@ -6,7 +5,9 @@ export declare class InternalRouter {
     private _unSubscribeHashEvent;
     startHashChange(): void;
     stopHashChange(): void;
-    getTemplate(): Observable<string>;
+    getTemplate(): {
+        subscribe: (fn: (value?: string) => void) => () => void;
+    };
     getCurrentRoute(): ICurrentRoute;
     navigateTo(path: string, state: Record<string, any>): void;
     private _registerOnHashChange;

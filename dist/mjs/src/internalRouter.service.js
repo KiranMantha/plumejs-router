@@ -1,17 +1,17 @@
 import { __decorate } from "tslib";
-import { Injectable, wrapIntoObservable } from '@plumejs/core';
-import { fromEvent, Subject } from 'rxjs';
+import { Injectable } from '@plumejs/core';
 import { StaticRouter } from './staticRouter';
+import { wrapIntoObservable, SubjectObs, fromVanillaEvent } from './utils';
 let InternalRouter = class InternalRouter {
     _currentRoute = {
         path: '',
         params: {},
         state: {}
     };
-    _template = new Subject();
+    _template = new SubjectObs();
     _unSubscribeHashEvent;
     startHashChange() {
-        this._unSubscribeHashEvent = fromEvent(window, 'hashchange').subscribe(() => {
+        this._unSubscribeHashEvent = fromVanillaEvent(window, 'hashchange', () => {
             this._registerOnHashChange();
         });
     }

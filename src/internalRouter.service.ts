@@ -1,7 +1,7 @@
-import { Injectable, wrapIntoObservable } from '@plumejs/core';
-import { fromEvent, Observable, Subject } from 'rxjs';
+import { Injectable } from '@plumejs/core';
 import { ICurrentRoute } from './router.model';
 import { StaticRouter } from './staticRouter';
+import { wrapIntoObservable, SubjectObs, fromVanillaEvent } from './utils';
 
 @Injectable()
 export class InternalRouter {
@@ -10,11 +10,11 @@ export class InternalRouter {
     params: {},
     state: {}
   };
-  private _template = new Subject<string>();
-  private _unSubscribeHashEvent;
+  private _template = new SubjectObs<string>();
+  private _unSubscribeHashEvent: () => void;
 
   startHashChange() {
-    this._unSubscribeHashEvent = fromEvent(window, 'hashchange').subscribe(() => {
+    this._unSubscribeHashEvent = fromVanillaEvent(window, 'hashchange', () => {
       this._registerOnHashChange();
     });
   }
@@ -23,7 +23,7 @@ export class InternalRouter {
     this._unSubscribeHashEvent();
   }
 
-  getTemplate(): Observable<string> {
+  getTemplate(): { subscribe: (fn: (value?: string) => void) => () => void } {
     return this._template.asObservable();
   }
 

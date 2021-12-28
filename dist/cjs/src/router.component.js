@@ -2,20 +2,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const core_1 = require("@plumejs/core");
-const rxjs_1 = require("rxjs");
 const internalRouter_service_1 = require("./internalRouter.service");
 let RouterOutlet = class RouterOutlet {
     constructor(internalRouterSrvc, renderer) {
         this.internalRouterSrvc = internalRouterSrvc;
         this.renderer = renderer;
         this._template = '';
-        this._subscriptions = new rxjs_1.Subscription();
     }
     beforeMount() {
-        this._subscriptions.add(this.internalRouterSrvc.getTemplate().subscribe((tmpl) => {
+        this._templateSubscription = this.internalRouterSrvc.getTemplate().subscribe((tmpl) => {
             this._template = tmpl;
             this.renderer.update();
-        }));
+        });
         this.internalRouterSrvc.startHashChange();
     }
     mount() {
@@ -23,7 +21,7 @@ let RouterOutlet = class RouterOutlet {
         this.internalRouterSrvc.navigateTo(path, null);
     }
     unmount() {
-        this._subscriptions.unsubscribe();
+        this._templateSubscription();
         this.internalRouterSrvc.stopHashChange();
     }
     render() {

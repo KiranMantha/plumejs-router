@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.InternalRouter = void 0;
 const tslib_1 = require("tslib");
 const core_1 = require("@plumejs/core");
-const rxjs_1 = require("rxjs");
 const staticRouter_1 = require("./staticRouter");
+const utils_1 = require("./utils");
 let InternalRouter = class InternalRouter {
     constructor() {
         this._currentRoute = {
@@ -12,10 +12,10 @@ let InternalRouter = class InternalRouter {
             params: {},
             state: {}
         };
-        this._template = new rxjs_1.Subject();
+        this._template = new utils_1.SubjectObs();
     }
     startHashChange() {
-        this._unSubscribeHashEvent = (0, rxjs_1.fromEvent)(window, 'hashchange').subscribe(() => {
+        this._unSubscribeHashEvent = (0, utils_1.fromVanillaEvent)(window, 'hashchange', () => {
             this._registerOnHashChange();
         });
     }
@@ -69,7 +69,7 @@ let InternalRouter = class InternalRouter {
         if (routeItem) {
             this._currentRoute.path = path;
             this._currentRoute.state = Object.assign({}, (state || {}));
-            (0, core_1.wrapIntoObservable)(routeItem.canActivate()).subscribe((val) => {
+            (0, utils_1.wrapIntoObservable)(routeItem.canActivate()).subscribe((val) => {
                 if (!val)
                     return;
                 const _params = staticRouter_1.StaticRouter.checkParams(uParams, routeItem);
@@ -77,7 +77,7 @@ let InternalRouter = class InternalRouter {
                     this._currentRoute.params = _params;
                     if (!routeItem.IsRegistered) {
                         if (routeItem.TemplatePath) {
-                            (0, core_1.wrapIntoObservable)(routeItem.TemplatePath()).subscribe(() => {
+                            (0, utils_1.wrapIntoObservable)(routeItem.TemplatePath()).subscribe(() => {
                                 routeItem.IsRegistered = true;
                                 this._template.next(routeItem.Template);
                             });
