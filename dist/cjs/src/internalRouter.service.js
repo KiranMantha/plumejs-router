@@ -9,7 +9,8 @@ let InternalRouter = class InternalRouter {
     constructor() {
         this._currentRoute = {
             path: '',
-            params: {},
+            routeParams: new Map(),
+            queryParams: new Map(),
             state: {}
         };
         this._template = new utils_1.SubjectObs();
@@ -74,7 +75,11 @@ let InternalRouter = class InternalRouter {
                     return;
                 const _params = staticRouter_1.StaticRouter.checkParams(uParams, routeItem);
                 if (Object.keys(_params).length > 0 || path) {
-                    this._currentRoute.params = _params;
+                    this._currentRoute.routeParams = new Map(Object.entries(_params));
+                    const entries = window.location.hash.split('?')[1]
+                        ? new URLSearchParams(window.location.hash.split('?')[1]).entries()
+                        : [];
+                    this._currentRoute.queryParams = new Map(entries);
                     if (!routeItem.IsRegistered) {
                         if (routeItem.TemplatePath) {
                             (0, utils_1.wrapIntoObservable)(routeItem.TemplatePath()).subscribe(() => {

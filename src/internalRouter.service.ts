@@ -7,7 +7,8 @@ import { wrapIntoObservable, SubjectObs, fromVanillaEvent } from './utils';
 export class InternalRouter {
   private _currentRoute: ICurrentRoute = {
     path: '',
-    params: {},
+    routeParams: new Map(),
+    queryParams: new Map(),
     state: {}
   };
   private _template = new SubjectObs<string>();
@@ -76,7 +77,11 @@ export class InternalRouter {
         if (!val) return;
         const _params = StaticRouter.checkParams(uParams, routeItem);
         if (Object.keys(_params).length > 0 || path) {
-          this._currentRoute.params = _params;
+          this._currentRoute.routeParams = new Map(Object.entries(_params));
+          const entries = window.location.hash.split('?')[1]
+            ? new URLSearchParams(window.location.hash.split('?')[1]).entries()
+            : [];
+          this._currentRoute.queryParams = new Map(entries);
           if (!routeItem.IsRegistered) {
             if (routeItem.TemplatePath) {
               wrapIntoObservable(routeItem.TemplatePath()).subscribe(() => {

@@ -80,7 +80,11 @@ class YourClass {
 }
 ```
 
-# Accessing Route Params
+# Route params and Query params from current route
+
+`router.getCurrentRoute()` now holds routeParams and queryParams as es6 Map which helps to check if a parameter is there or not by leveraging es6 Map functions.
+
+## Accessing Route Params
 
 To Access current route parameters
 
@@ -95,7 +99,26 @@ To Access current route parameters
 
   const currentRoute = this.router.getCurrentRoute();
   const path = currentRoute.path; // returns '/details'
-  const id = currentRoute.params.id; /// returns 123
+  const id = currentRoute.routeParams.get('id'); /// returns 123
+```
+
+## Accessing Query Params
+
+To Access current route parameters
+
+```typescript
+  route = [{
+    path: '/details'
+    ....
+  }]
+  ...
+
+  If url is /details?greet=helloworld&id=123 then:
+
+  const currentRoute = this.router.getCurrentRoute();
+  const path = currentRoute.path; // returns '/details'
+  const greet = currentRoute.queryParams.get('greet'); /// returns helloworld
+  const id = currentRoute.queryParams.get('id'); /// returns 123
 ```
 
 # Pass state in route

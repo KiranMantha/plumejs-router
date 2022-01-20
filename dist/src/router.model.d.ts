@@ -1,9 +1,8 @@
 import type { Observable } from 'rxjs';
 interface ICurrentRoute {
     path: string;
-    params: {
-        [key: string]: string | number | boolean;
-    };
+    routeParams: Map<string, string | number | boolean>;
+    queryParams: Map<string, string | number | boolean>;
     state: Record<string, any>;
 }
 interface RouteItem {
