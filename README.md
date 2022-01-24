@@ -69,7 +69,8 @@ import { Component } from '@plumejs/core';
 import { Router } from '@plumejs/router';
 
 @Component({
-  selector: 'your-selector'
+  selector: 'your-selector',
+  deps: [Router]
 })
 class YourClass {
   constructor(private router: Router) {}
@@ -130,7 +131,8 @@ import { Component } from '@plumejs/core';
 import { Router } from '@plumejs/router';
 
 @Component({
-  selector: 'your-selector'
+  selector: 'your-selector',
+  deps: [Router]
 })
 class YourClass {
   constructor(private router: Router) {}
@@ -142,7 +144,8 @@ class YourClass {
 
 //in other route component
 @Component({
-  selector: 'other-comp'
+  selector: 'other-comp',
+  deps: [Router]
 })
 class OtherComponent{
   constructor(private router: Router) {}

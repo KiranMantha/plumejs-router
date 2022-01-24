@@ -37,7 +37,8 @@ let RouterOutlet = class RouterOutlet {
 };
 RouterOutlet = (0, tslib_1.__decorate)([
     (0, core_1.Component)({
-        selector: 'router-outlet'
+        selector: 'router-outlet',
+        deps: [internalRouter_service_1.InternalRouter, core_1.Renderer]
     }),
     (0, tslib_1.__metadata)("design:paramtypes", [internalRouter_service_1.InternalRouter, core_1.Renderer])
 ], RouterOutlet);

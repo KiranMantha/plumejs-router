@@ -38,7 +38,8 @@ let RouterOutlet = class RouterOutlet {
 };
 RouterOutlet = __decorate([
     Component({
-        selector: 'router-outlet'
+        selector: 'router-outlet',
+        deps: [InternalRouter, Renderer]
     }),
     __metadata("design:paramtypes", [InternalRouter, Renderer])
 ], RouterOutlet);

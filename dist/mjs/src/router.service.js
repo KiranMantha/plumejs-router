@@ -29,7 +29,7 @@ let Router = class Router {
     }
 };
 Router = __decorate([
-    Injectable(),
+    Injectable({ name: 'Router', deps: [InternalRouter] }),
     __metadata("design:paramtypes", [InternalRouter])
 ], Router);
 export { Router };

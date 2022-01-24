@@ -31,7 +31,7 @@ let Router = class Router {
     }
 };
 Router = (0, tslib_1.__decorate)([
-    (0, core_1.Injectable)(),
+    (0, core_1.Injectable)({ name: 'Router', deps: [internalRouter_service_1.InternalRouter] }),
     (0, tslib_1.__metadata)("design:paramtypes", [internalRouter_service_1.InternalRouter])
 ], Router);
 exports.Router = Router;

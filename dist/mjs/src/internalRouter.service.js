@@ -96,6 +96,6 @@ let InternalRouter = class InternalRouter {
     }
 };
 InternalRouter = __decorate([
-    Injectable()
+    Injectable({ name: 'InternalRouter' })
 ], InternalRouter);
 export { InternalRouter };

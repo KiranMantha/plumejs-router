@@ -2,7 +2,8 @@ import { Component, html, IHooks, Renderer } from '@plumejs/core';
 import { InternalRouter } from './internalRouter.service';
 
 @Component({
-  selector: 'router-outlet'
+  selector: 'router-outlet',
+  deps: [InternalRouter, Renderer]
 })
 class RouterOutlet implements IHooks {
   private _template = '';

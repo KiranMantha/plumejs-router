@@ -100,6 +100,6 @@ let InternalRouter = class InternalRouter {
     }
 };
 InternalRouter = (0, tslib_1.__decorate)([
-    (0, core_1.Injectable)()
+    (0, core_1.Injectable)({ name: 'InternalRouter' })
 ], InternalRouter);
 exports.InternalRouter = InternalRouter;
