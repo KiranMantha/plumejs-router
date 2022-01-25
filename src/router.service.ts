@@ -5,7 +5,7 @@ import { InternalRouter } from './internalRouter.service';
 import { ICurrentRoute, Route } from './router.model';
 import { StaticRouter } from './staticRouter';
 
-@Injectable({ name: 'Router', deps: [InternalRouter] })
+@Injectable({ deps: [InternalRouter] })
 export class Router {
   constructor(private internalRouter: InternalRouter) {}
 

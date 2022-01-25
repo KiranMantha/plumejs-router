@@ -3,7 +3,7 @@ import { ICurrentRoute } from './router.model';
 import { StaticRouter } from './staticRouter';
 import { wrapIntoObservable, SubjectObs, fromVanillaEvent } from './utils';
 
-@Injectable({ name: 'InternalRouter' })
+@Injectable()
 export class InternalRouter {
   private _currentRoute: ICurrentRoute = {
     path: '',
