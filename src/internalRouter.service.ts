@@ -1,24 +1,30 @@
-import { Injectable, wrapIntoObservable } from '@plumejs/core';
-import { fromEvent, Observable, Subject } from 'rxjs';
+import { Injectable } from '@plumejs/core';
 import { ICurrentRoute } from './router.model';
 import { StaticRouter } from './staticRouter';
+import { wrapIntoObservable, SubjectObs, fromVanillaEvent } from './utils';
 
 @Injectable()
 export class InternalRouter {
   private _currentRoute: ICurrentRoute = {
     path: '',
-    params: {},
+    routeParams: new Map(),
+    queryParams: new Map(),
     state: {}
   };
-  private _template = new Subject<string>();
+  private _template = new SubjectObs<string>();
+  private _unSubscribeHashEvent: () => void;
 
-  constructor() {
-    fromEvent(window, 'hashchange').subscribe(() => {
+  startHashChange() {
+    this._unSubscribeHashEvent = fromVanillaEvent(window, 'hashchange', () => {
       this._registerOnHashChange();
     });
   }
 
-  getTemplate(): Observable<string> {
+  stopHashChange() {
+    this._unSubscribeHashEvent();
+  }
+
+  getTemplate(): { subscribe: (fn: (value?: string) => void) => () => void } {
     return this._template.asObservable();
   }
 
@@ -56,7 +62,7 @@ export class InternalRouter {
     const uParams = path.split('/').filter((h) => {
       return h.length > 0;
     });
-    const routeArr = StaticRouter.routList.filter((route) => {
+    const routeArr = StaticRouter.routeList.filter((route) => {
       if (route.Params.length === uParams.length && this._routeMatcher(route.Url, path)) {
         return route;
       } else if (route.Url === path) {
@@ -71,7 +77,11 @@ export class InternalRouter {
         if (!val) return;
         const _params = StaticRouter.checkParams(uParams, routeItem);
         if (Object.keys(_params).length > 0 || path) {
-          this._currentRoute.params = _params;
+          this._currentRoute.routeParams = new Map(Object.entries(_params));
+          const entries = window.location.hash.split('?')[1]
+            ? new URLSearchParams(window.location.hash.split('?')[1]).entries()
+            : [];
+          this._currentRoute.queryParams = new Map(entries);
           if (!routeItem.IsRegistered) {
             if (routeItem.TemplatePath) {
               wrapIntoObservable(routeItem.TemplatePath()).subscribe(() => {

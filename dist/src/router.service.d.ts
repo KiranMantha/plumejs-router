@@ -5,5 +5,5 @@ export declare class Router {
     constructor(internalRouter: InternalRouter);
     getCurrentRoute(): ICurrentRoute;
     navigateTo(path: string, state?: Record<string, any>): void;
-    static registerRoutes(routes: Array<Route>): void;
+    static registerRoutes(routes: Array<Route>, preloadAllRoutes?: boolean): void;
 }

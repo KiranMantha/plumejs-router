@@ -1,32 +1,33 @@
 import { Component, html, IHooks, Renderer } from '@plumejs/core';
-import { Subscription } from 'rxjs';
 import { InternalRouter } from './internalRouter.service';
 
 @Component({
-  selector: 'router-outlet'
+  selector: 'router-outlet',
+  deps: [InternalRouter, Renderer]
 })
 class RouterOutlet implements IHooks {
   private _template = '';
-  private _subscriptions = new Subscription();
+  private _templateSubscription: () => void;
 
-  constructor(private router: InternalRouter, private renderer: Renderer) {}
+  constructor(private internalRouterSrvc: InternalRouter, private renderer: Renderer) {}
 
   beforeMount() {
-    this._subscriptions.add(
-      this.router.getTemplate().subscribe((tmpl: string) => {
-        this._template = tmpl;
-        this.renderer.update();
-      })
-    );
+    this._templateSubscription = this.internalRouterSrvc.getTemplate().subscribe((tmpl: string) => {
+      this._template = tmpl;
+      this.renderer.update();
+    });
+
+    this.internalRouterSrvc.startHashChange();
   }
 
   mount() {
     const path = window.location.hash.replace(/^#/, '');
-    this.router.navigateTo(path, null);
+    this.internalRouterSrvc.navigateTo(path, null);
   }
 
   unmount() {
-    this._subscriptions.unsubscribe();
+    this._templateSubscription();
+    this.internalRouterSrvc.stopHashChange();
   }
 
   render() {
