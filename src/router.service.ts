@@ -1,6 +1,5 @@
 //https://krasimirtsonev.com/blog/article/A-modern-JavaScript-router-in-100-lines-history-api-pushState-hash-url
 import { Injectable } from '@plumejs/core';
-import { isNode } from 'browser-or-node';
 import { InternalRouter } from './internalRouter.service';
 import { ICurrentRoute, Route } from './router.model';
 import { StaticRouter } from './staticRouter';
@@ -18,15 +17,13 @@ export class Router {
   }
 
   static registerRoutes(routes: Array<Route>, preloadAllRoutes = false) {
-    if (!isNode) {
-      if (Array.isArray(routes)) {
-        for (const route of routes) {
-          StaticRouter.formatRoute(route);
-        }
-        preloadAllRoutes && StaticRouter.preloadRoutes();
-      } else {
-        throw Error('router.addRoutes: the parameter must be an array');
+    if (Array.isArray(routes)) {
+      for (const route of routes) {
+        StaticRouter.formatRoute(route);
       }
+      preloadAllRoutes && StaticRouter.preloadRoutes();
+    } else {
+      throw Error('router.addRoutes: the parameter must be an array');
     }
   }
 }

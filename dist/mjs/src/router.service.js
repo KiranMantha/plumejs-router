@@ -1,6 +1,5 @@
 import { __decorate, __metadata } from "tslib";
 import { Injectable } from '@plumejs/core';
-import { isNode } from 'browser-or-node';
 import { InternalRouter } from './internalRouter.service';
 import { StaticRouter } from './staticRouter';
 let Router = class Router {
@@ -15,16 +14,14 @@ let Router = class Router {
         this.internalRouter.navigateTo(path, state);
     }
     static registerRoutes(routes, preloadAllRoutes = false) {
-        if (!isNode) {
-            if (Array.isArray(routes)) {
-                for (const route of routes) {
-                    StaticRouter.formatRoute(route);
-                }
-                preloadAllRoutes && StaticRouter.preloadRoutes();
+        if (Array.isArray(routes)) {
+            for (const route of routes) {
+                StaticRouter.formatRoute(route);
             }
-            else {
-                throw Error('router.addRoutes: the parameter must be an array');
-            }
+            preloadAllRoutes && StaticRouter.preloadRoutes();
+        }
+        else {
+            throw Error('router.addRoutes: the parameter must be an array');
         }
     }
 };
