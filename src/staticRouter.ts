@@ -2,35 +2,36 @@ import { InternalRouteItem, Route, RouteItem } from './router.model';
 
 export class StaticRouter {
   static routeList: Array<InternalRouteItem> = [];
-  static checkParams(up: Array<string>, r: RouteItem) {
-    let pmc = 0;
-    const po: Record<string, any> = {},
-      pc = r.ParamCount;
 
-    for (let i = 0; i < up.length; i++) {
-      const rtParam = r.Params[i];
-      if (rtParam.indexOf(':') >= 0) {
-        po[rtParam.split(':')[1]] = up[i];
-        pmc += 1;
+  static checkParams(uParams: Array<string>, routeItem: RouteItem) {
+    let paramMapCount = 0;
+    const paramsObject: Record<string, any> = {},
+      paramCount = routeItem.ParamCount;
+
+    for (let i = 0; i < uParams.length; i++) {
+      const routeParam = routeItem.Params[i];
+      if (routeParam.indexOf(':') >= 0) {
+        paramsObject[routeParam.split(':')[1]] = uParams[i].split('?')[0];
+        paramMapCount += 1;
       }
     }
-    if (pmc === pc) {
-      return po;
+    if (paramMapCount === paramCount) {
+      return paramsObject;
     }
     return {};
   }
 
-  static getParamCount(p: string[]) {
-    let pc = 0;
-    p.forEach((k: string) => {
-      if (k.indexOf(':') >= 0) {
-        pc += 1;
+  static getParamCount(params: string[]) {
+    let paramCount = 0;
+    params.forEach((param) => {
+      if (param.indexOf(':') >= 0) {
+        paramCount += 1;
       }
     });
-    return pc;
+    return paramCount;
   }
 
-  static formatRoute(r: Route) {
+  static formatRoute(route: Route) {
     const obj: InternalRouteItem = {
       Params: {},
       Url: '',
@@ -40,18 +41,18 @@ export class StaticRouter {
       redirectTo: '',
       canActivate: () => true
     };
-    obj.Params = r.path.split('/').filter((h: string) => {
-      return h.length > 0;
+    obj.Params = route.path.split('/').filter((str: string) => {
+      return str.length > 0;
     });
-    obj.Url = r.path;
+    obj.Url = route.path;
     obj.Template = '';
-    obj.redirectTo = r.redirectTo;
-    if (r.template) {
-      if (!r.templatePath) throw Error('templatePath is required in route if template is mentioned.');
-      obj.Template = r.template;
-      obj.TemplatePath = r.templatePath;
+    obj.redirectTo = route.redirectTo;
+    if (route.template) {
+      if (!route.templatePath) throw Error('templatePath is required in route if template is mentioned.');
+      obj.Template = route.template;
+      obj.TemplatePath = route.templatePath;
     }
-    if (r.canActivate) obj.canActivate = r.canActivate;
+    if (route.canActivate) obj.canActivate = route.canActivate;
     obj.ParamCount = StaticRouter.getParamCount(obj.Params);
     StaticRouter.routeList.push(obj);
   }
