@@ -1,12 +1,12 @@
 export class StaticRouter {
     static routeList = [];
-    static checkParams(uParams, routeItem) {
+    static checkParams(urlParams, routeItem) {
         let paramMapCount = 0;
         const paramsObject = {}, paramCount = routeItem.ParamCount;
-        for (let i = 0; i < uParams.length; i++) {
+        for (let i = 0; i < urlParams.length; i++) {
             const routeParam = routeItem.Params[i];
             if (routeParam.indexOf(':') >= 0) {
-                paramsObject[routeParam.split(':')[1]] = uParams[i].split('?')[0];
+                paramsObject[routeParam.split(':')[1]] = urlParams[i].split('?')[0];
                 paramMapCount += 1;
             }
         }
