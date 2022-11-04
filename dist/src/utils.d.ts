@@ -1,9 +1,9 @@
 declare class SubjectObs<T> {
     _internalFn: (value?: T) => void;
     asObservable(): {
-        subscribe: (fn: (value?: T) => void) => () => void;
+        subscribe: (callback: (value?: T) => void) => () => void;
     };
-    subscribe(fn: (value?: T) => void): () => void;
+    subscribe(callback: (value?: T) => void): () => void;
     unsubscribe(): void;
     next(value: T): void;
 }

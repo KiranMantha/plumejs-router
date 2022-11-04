@@ -6,10 +6,10 @@ export class StaticRouter {
   static checkParams(urlParams: Array<string>, routeItem: RouteItem) {
     let paramMapCount = 0;
     const paramsObject: Record<string, any> = {},
-      paramCount = routeItem.ParamCount;
+      paramCount = routeItem.paramCount;
 
     for (let i = 0; i < urlParams.length; i++) {
-      const routeParam = routeItem.Params[i];
+      const routeParam = routeItem.params[i];
       if (routeParam.indexOf(':') >= 0) {
         paramsObject[routeParam.split(':')[1]] = urlParams[i].split('?')[0];
         paramMapCount += 1;
@@ -32,34 +32,34 @@ export class StaticRouter {
   }
 
   static formatRoute(route: Route) {
-    const obj: InternalRouteItem = {
-      Params: {},
-      Url: '',
-      Template: '',
-      ParamCount: 0,
-      IsRegistered: false,
+    const internalRouteItem: InternalRouteItem = {
+      params: {},
+      url: '',
+      template: '',
+      paramCount: 0,
+      isRegistered: false,
       redirectTo: '',
       canActivate: () => true
     };
-    obj.Params = route.path.split('/').filter((str: string) => {
+    internalRouteItem.params = route.path.split('/').filter((str: string) => {
       return str.length > 0;
     });
-    obj.Url = route.path;
-    obj.Template = '';
-    obj.redirectTo = route.redirectTo;
+    internalRouteItem.url = route.path;
+    internalRouteItem.template = '';
+    internalRouteItem.redirectTo = route.redirectTo;
     if (route.template) {
       if (!route.templatePath) throw Error('templatePath is required in route if template is mentioned.');
-      obj.Template = route.template;
-      obj.TemplatePath = route.templatePath;
+      internalRouteItem.template = route.template;
+      internalRouteItem.templatePath = route.templatePath;
     }
-    if (route.canActivate) obj.canActivate = route.canActivate;
-    obj.ParamCount = StaticRouter.getParamCount(obj.Params);
-    StaticRouter.routeList.push(obj);
+    if (route.canActivate) internalRouteItem.canActivate = route.canActivate;
+    internalRouteItem.paramCount = StaticRouter.getParamCount(internalRouteItem.params);
+    StaticRouter.routeList.push(internalRouteItem);
   }
 
   static preloadRoutes() {
     for (const route of StaticRouter.routeList) {
-      route.TemplatePath && route.TemplatePath();
+      route.templatePath && route.templatePath();
     }
   }
 }

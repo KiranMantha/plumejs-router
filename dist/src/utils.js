@@ -9,9 +9,9 @@ const ofObs = (input) => {
 };
 const fromPromiseObs = (input) => {
     return {
-        subscribe: (fn) => {
+        subscribe: (callback) => {
             Promise.resolve(input).then((value) => {
-                fn(value);
+                callback(value);
             });
         }
     };
@@ -20,13 +20,13 @@ class SubjectObs {
     _internalFn;
     asObservable() {
         return {
-            subscribe: (fn) => {
-                return this.subscribe(fn);
+            subscribe: (callback) => {
+                return this.subscribe(callback);
             }
         };
     }
-    subscribe(fn) {
-        this._internalFn = fn;
+    subscribe(callback) {
+        this._internalFn = callback;
         return this.unsubscribe;
     }
     unsubscribe() {

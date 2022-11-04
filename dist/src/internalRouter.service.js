@@ -55,10 +55,10 @@ let InternalRouter = class InternalRouter {
             return h.length > 0;
         });
         const routeArr = StaticRouter.routeList.filter((route) => {
-            if (route.Params.length === uParams.length && this._routeMatcher(route.Url, path)) {
+            if (route.params.length === uParams.length && this._routeMatcher(route.url, path)) {
                 return route;
             }
-            else if (route.Url === path) {
+            else if (route.url === path) {
                 return route;
             }
         });
@@ -76,16 +76,16 @@ let InternalRouter = class InternalRouter {
                         ? new URLSearchParams(window.location.hash.split('?')[1]).entries()
                         : [];
                     this._currentRoute.queryParams = new Map(entries);
-                    if (!routeItem.IsRegistered) {
-                        if (routeItem.TemplatePath) {
-                            wrapIntoObservable(routeItem.TemplatePath()).subscribe(() => {
-                                routeItem.IsRegistered = true;
-                                this._template.next(routeItem.Template);
+                    if (!routeItem.isRegistered) {
+                        if (routeItem.templatePath) {
+                            wrapIntoObservable(routeItem.templatePath()).subscribe(() => {
+                                routeItem.isRegistered = true;
+                                this._template.next(routeItem.template);
                             });
                         }
                     }
                     else {
-                        this._template.next(routeItem.Template);
+                        this._template.next(routeItem.template);
                     }
                 }
                 else {

@@ -11,9 +11,9 @@ const ofObs = (input: any) => {
 
 const fromPromiseObs = (input: Promise<any>) => {
   return {
-    subscribe: (fn: (value: any) => void) => {
+    subscribe: (callback: (value: any) => void) => {
       Promise.resolve(input).then((value) => {
-        fn(value);
+        callback(value);
       });
     }
   };
@@ -22,16 +22,16 @@ const fromPromiseObs = (input: Promise<any>) => {
 class SubjectObs<T> {
   _internalFn: (value?: T) => void;
 
-  asObservable(): { subscribe: (fn: (value?: T) => void) => () => void } {
+  asObservable(): { subscribe: (callback: (value?: T) => void) => () => void } {
     return {
-      subscribe: (fn: (value?: T) => void): (() => void) => {
-        return this.subscribe(fn);
+      subscribe: (callback: (value?: T) => void): (() => void) => {
+        return this.subscribe(callback);
       }
     };
   }
 
-  subscribe(fn: (value?: T) => void): () => void {
-    this._internalFn = fn;
+  subscribe(callback: (value?: T) => void): () => void {
+    this._internalFn = callback;
     return this.unsubscribe;
   }
 
