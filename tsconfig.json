@@ -27,7 +27,6 @@
   "exclude": [
     "__tests__",
     "dist",
-    "node_modules",
-    "ast-transformer.ts"
+    "node_modules"
   ]
 }
