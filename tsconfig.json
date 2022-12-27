@@ -20,6 +20,7 @@
     "emitDecoratorMetadata": true,
     "importHelpers": true,
     "noEmitOnError": true,
+    "skipLibCheck": true,
     "typeRoots": [
       "node_modules/@types"
     ]
