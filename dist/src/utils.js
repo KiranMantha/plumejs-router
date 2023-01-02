@@ -1,6 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.fromVanillaEvent = exports.SubjectObs = exports.wrapIntoObservable = void 0;
 const isObservable = (obj) => !!obj && typeof obj.subscribe === 'function';
 const isPromise = (obj) => !!obj && typeof obj.then === 'function';
 const ofObs = (input) => {
@@ -12,23 +9,24 @@ const ofObs = (input) => {
 };
 const fromPromiseObs = (input) => {
     return {
-        subscribe: (fn) => {
+        subscribe: (callback) => {
             Promise.resolve(input).then((value) => {
-                fn(value);
+                callback(value);
             });
         }
     };
 };
 class SubjectObs {
+    _internalFn;
     asObservable() {
         return {
-            subscribe: (fn) => {
-                return this.subscribe(fn);
+            subscribe: (callback) => {
+                return this.subscribe(callback);
             }
         };
     }
-    subscribe(fn) {
-        this._internalFn = fn;
+    subscribe(callback) {
+        this._internalFn = callback;
         return this.unsubscribe;
     }
     unsubscribe() {
@@ -38,7 +36,6 @@ class SubjectObs {
         this._internalFn(value);
     }
 }
-exports.SubjectObs = SubjectObs;
 const wrapIntoObservable = (value) => {
     if (isObservable(value)) {
         return value;
@@ -48,7 +45,6 @@ const wrapIntoObservable = (value) => {
     }
     return ofObs(value);
 };
-exports.wrapIntoObservable = wrapIntoObservable;
 const fromVanillaEvent = (target, eventName, onNext, options = false) => {
     target.addEventListener(eventName, onNext, options);
     const unsubscribe = () => {
@@ -56,4 +52,4 @@ const fromVanillaEvent = (target, eventName, onNext, options = false) => {
     };
     return unsubscribe;
 };
-exports.fromVanillaEvent = fromVanillaEvent;
+export { wrapIntoObservable, SubjectObs, fromVanillaEvent };

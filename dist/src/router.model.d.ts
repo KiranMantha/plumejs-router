@@ -6,10 +6,10 @@ interface ICurrentRoute {
     state: Record<string, any>;
 }
 interface RouteItem {
-    Params: any;
-    Url: string;
-    Template: string;
-    ParamCount: number;
+    params: any;
+    url: string;
+    template: string;
+    paramCount: number;
 }
 interface Route {
     path: string;
@@ -19,8 +19,8 @@ interface Route {
     canActivate?: () => Observable<boolean> | Promise<boolean> | boolean;
 }
 interface InternalRouteItem extends RouteItem {
-    IsRegistered?: boolean;
-    TemplatePath?: () => Promise<any>;
+    isRegistered?: boolean;
+    templatePath?: () => Promise<any>;
     redirectTo?: string;
     canActivate: () => Observable<boolean> | Promise<boolean> | boolean;
 }

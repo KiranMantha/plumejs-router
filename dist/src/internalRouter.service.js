@@ -1,22 +1,18 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.InternalRouter = void 0;
-const tslib_1 = require("tslib");
-const core_1 = require("@plumejs/core");
-const staticRouter_1 = require("./staticRouter");
-const utils_1 = require("./utils");
+import { __decorate } from "tslib";
+import { Injectable } from '@plumejs/core';
+import { StaticRouter } from './staticRouter';
+import { wrapIntoObservable, SubjectObs, fromVanillaEvent } from './utils';
 let InternalRouter = class InternalRouter {
-    constructor() {
-        this._currentRoute = {
-            path: '',
-            routeParams: new Map(),
-            queryParams: new Map(),
-            state: {}
-        };
-        this._template = new utils_1.SubjectObs();
-    }
+    _currentRoute = {
+        path: '',
+        routeParams: new Map(),
+        queryParams: new Map(),
+        state: {}
+    };
+    _template = new SubjectObs();
+    _unSubscribeHashEvent;
     startHashChange() {
-        this._unSubscribeHashEvent = (0, utils_1.fromVanillaEvent)(window, 'hashchange', () => {
+        this._unSubscribeHashEvent = fromVanillaEvent(window, 'hashchange', () => {
             this._registerOnHashChange();
         });
     }
@@ -58,38 +54,38 @@ let InternalRouter = class InternalRouter {
         const uParams = path.split('/').filter((h) => {
             return h.length > 0;
         });
-        const routeArr = staticRouter_1.StaticRouter.routeList.filter((route) => {
-            if (route.Params.length === uParams.length && this._routeMatcher(route.Url, path)) {
+        const routeArr = StaticRouter.routeList.filter((route) => {
+            if (route.params.length === uParams.length && this._routeMatcher(route.url, path)) {
                 return route;
             }
-            else if (route.Url === path) {
+            else if (route.url === path) {
                 return route;
             }
         });
         const routeItem = routeArr.length > 0 ? routeArr[0] : null;
         if (routeItem) {
             this._currentRoute.path = path;
-            this._currentRoute.state = Object.assign({}, (state || {}));
-            (0, utils_1.wrapIntoObservable)(routeItem.canActivate()).subscribe((val) => {
+            this._currentRoute.state = { ...(state || {}) };
+            wrapIntoObservable(routeItem.canActivate()).subscribe((val) => {
                 if (!val)
                     return;
-                const _params = staticRouter_1.StaticRouter.checkParams(uParams, routeItem);
+                const _params = StaticRouter.checkParams(uParams, routeItem);
                 if (Object.keys(_params).length > 0 || path) {
                     this._currentRoute.routeParams = new Map(Object.entries(_params));
                     const entries = window.location.hash.split('?')[1]
                         ? new URLSearchParams(window.location.hash.split('?')[1]).entries()
                         : [];
                     this._currentRoute.queryParams = new Map(entries);
-                    if (!routeItem.IsRegistered) {
-                        if (routeItem.TemplatePath) {
-                            (0, utils_1.wrapIntoObservable)(routeItem.TemplatePath()).subscribe(() => {
-                                routeItem.IsRegistered = true;
-                                this._template.next(routeItem.Template);
+                    if (!routeItem.isRegistered) {
+                        if (routeItem.templatePath) {
+                            wrapIntoObservable(routeItem.templatePath()).subscribe(() => {
+                                routeItem.isRegistered = true;
+                                this._template.next(routeItem.template);
                             });
                         }
                     }
                     else {
-                        this._template.next(routeItem.Template);
+                        this._template.next(routeItem.template);
                     }
                 }
                 else {
@@ -99,7 +95,7 @@ let InternalRouter = class InternalRouter {
         }
     }
 };
-InternalRouter = (0, tslib_1.__decorate)([
-    (0, core_1.Injectable)()
+InternalRouter = __decorate([
+    Injectable()
 ], InternalRouter);
-exports.InternalRouter = InternalRouter;
+export { InternalRouter };

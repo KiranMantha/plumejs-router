@@ -8,10 +8,10 @@ interface ICurrentRoute {
 }
 
 interface RouteItem {
-  Params: any;
-  Url: string;
-  Template: string;
-  ParamCount: number;
+  params: any;
+  url: string;
+  template: string;
+  paramCount: number;
 }
 
 interface Route {
@@ -23,8 +23,8 @@ interface Route {
 }
 
 interface InternalRouteItem extends RouteItem {
-  IsRegistered?: boolean;
-  TemplatePath?: () => Promise<any>;
+  isRegistered?: boolean;
+  templatePath?: () => Promise<any>;
   redirectTo?: string;
   canActivate: () => Observable<boolean> | Promise<boolean> | boolean;
 }
