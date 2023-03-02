@@ -39,6 +39,7 @@ export class StaticRouter {
       paramCount: 0,
       isRegistered: false,
       redirectTo: '',
+      preload: route.preload,
       canActivate: () => true
     };
     internalRouteItem.params = route.path.split('/').filter((str: string) => {
@@ -59,6 +60,13 @@ export class StaticRouter {
 
   static preloadRoutes() {
     for (const route of StaticRouter.routeList) {
+      route.templatePath && route.templatePath();
+    }
+  }
+
+  static preloadSelectedRoutes() {
+    const filteredRoutes = StaticRouter.routeList.filter((route) => route.preload === true);
+    for (const route of filteredRoutes) {
       route.templatePath && route.templatePath();
     }
   }

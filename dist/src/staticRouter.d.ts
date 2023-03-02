@@ -5,4 +5,5 @@ export declare class StaticRouter {
     static getParamCount(params: string[]): number;
     static formatRoute(route: Route): void;
     static preloadRoutes(): void;
+    static preloadSelectedRoutes(): void;
 }
