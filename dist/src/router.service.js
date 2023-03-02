@@ -18,12 +18,7 @@ let Router = class Router {
             for (const route of routes) {
                 StaticRouter.formatRoute(route);
             }
-            if (preloadAllRoutes) {
-                StaticRouter.preloadRoutes();
-            }
-            else {
-                StaticRouter.preloadSelectedRoutes();
-            }
+            preloadAllRoutes && StaticRouter.preloadRoutes();
         }
         else {
             throw Error('router.addRoutes: the parameter must be an array');

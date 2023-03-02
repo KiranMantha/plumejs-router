@@ -16,14 +16,12 @@ interface Route {
     template?: string;
     templatePath?: () => Promise<any>;
     redirectTo?: string;
-    preload?: boolean;
     canActivate?: () => Observable<boolean> | Promise<boolean> | boolean;
 }
 interface InternalRouteItem extends RouteItem {
     isRegistered?: boolean;
     templatePath?: () => Promise<any>;
     redirectTo?: string;
-    preload?: boolean;
     canActivate: () => Observable<boolean> | Promise<boolean> | boolean;
 }
 export { Route, RouteItem, ICurrentRoute, InternalRouteItem };
