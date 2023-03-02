@@ -167,3 +167,25 @@ Router.registerRoutes(this.routes, true);
 ```
 
 when declaring the routes. By default this is not enabled. This feature will helps in preloading all route chuncks after main route got rendered. With this, any route content is displayed at near instant.
+
+## Preloading specific routes
+
+The route interface contains `preload` property which can be used when declaring the routes like below:
+
+```typescript
+...
+routes: Array<Route> = [{
+      path: '',
+      redirectto: '/home',
+    }, {
+      path: '/home',
+      template: '<app-home></app-home>',
+      templatePath: () => import('<path-to-ts-file-of-home-component>')
+    }, {
+      path: '/contactus',
+      template: '<app-contactus></app-contactus>',
+      templatePath: () => import('<path-to-ts-file-of-contactus-component>'),
+      preload: true
+    }]
+```
+> :warning: If preload all routes flag in `Router.registerRoutes` is set as true then all routes will be preloaded irrespective of specificity. in order to make this work, use `Router.registerRoutes(routes, false)`.
