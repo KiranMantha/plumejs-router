@@ -21,7 +21,11 @@ export class Router {
       for (const route of routes) {
         StaticRouter.formatRoute(route);
       }
-      preloadAllRoutes && StaticRouter.preloadRoutes();
+      if (preloadAllRoutes) {
+        StaticRouter.preloadRoutes();
+      } else {
+        StaticRouter.preloadSelectedRoutes();
+      }
     } else {
       throw Error('router.addRoutes: the parameter must be an array');
     }
