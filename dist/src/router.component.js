@@ -1,19 +1,16 @@
 import { __decorate, __metadata } from "tslib";
-import { Component, html, Renderer } from '@plumejs/core';
+import { Component, html } from '@plumejs/core';
 import { InternalRouter } from './internalRouter.service';
 let RouterOutlet = class RouterOutlet {
     internalRouterSrvc;
-    renderer;
     _template = '';
     _templateSubscription;
-    constructor(internalRouterSrvc, renderer) {
+    constructor(internalRouterSrvc) {
         this.internalRouterSrvc = internalRouterSrvc;
-        this.renderer = renderer;
     }
     beforeMount() {
         this._templateSubscription = this.internalRouterSrvc.getTemplate().subscribe((tmpl) => {
             this._template = tmpl;
-            this.renderer.update();
         });
         this.internalRouterSrvc.startHashChange();
     }
@@ -39,7 +36,7 @@ let RouterOutlet = class RouterOutlet {
 RouterOutlet = __decorate([
     Component({
         selector: 'router-outlet',
-        deps: [InternalRouter, Renderer]
+        deps: [InternalRouter]
     }),
-    __metadata("design:paramtypes", [InternalRouter, Renderer])
+    __metadata("design:paramtypes", [InternalRouter])
 ], RouterOutlet);
