@@ -27,14 +27,14 @@ let InternalRouter = class InternalRouter {
         return this._currentRoute;
     }
     navigateTo(path = '', state) {
+        this._routeStateMap.clear();
         if (path) {
             const windowHash = window.location.hash.replace(/^#/, '');
-            if (windowHash !== path) {
+            if (windowHash === path) {
                 this._navigateTo(path, state);
             }
-            window.location.hash = '#' + path;
-            this._routeStateMap.clear();
             this._routeStateMap.set(path, state);
+            window.location.hash = '#' + path;
         }
         else {
             this._navigateTo(path, state);
