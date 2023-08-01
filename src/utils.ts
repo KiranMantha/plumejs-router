@@ -70,12 +70,11 @@ const fromVanillaEvent = (
 };
 
 const matchPath = (route: string, path: string): boolean => {
-  if (route) {
+  if (route && path) {
     const pattern = new RegExp(route.replace(/:[^\s/]+/g, '([\\w-]+)'));
     return pattern.test(path);
-  } else {
-    return route === path;
   }
+  return false;
 };
 
 export { wrapIntoObservable, SubjectObs, fromVanillaEvent, matchPath };
