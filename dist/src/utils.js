@@ -52,4 +52,13 @@ const fromVanillaEvent = (target, eventName, onNext, options = false) => {
     };
     return unsubscribe;
 };
-export { wrapIntoObservable, SubjectObs, fromVanillaEvent };
+const matchPath = (route, path) => {
+    if (route) {
+        const pattern = new RegExp(route.replace(/:[^\s/]+/g, '([\\w-]+)'));
+        return pattern.test(path);
+    }
+    else {
+        return route === path;
+    }
+};
+export { wrapIntoObservable, SubjectObs, fromVanillaEvent, matchPath };

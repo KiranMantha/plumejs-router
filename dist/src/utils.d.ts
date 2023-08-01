@@ -9,4 +9,5 @@ declare class SubjectObs<T> {
 }
 declare const wrapIntoObservable: (value: any) => any;
 declare const fromVanillaEvent: (target: EventTarget, eventName: string, onNext: EventListenerOrEventListenerObject, options?: boolean) => (() => void);
-export { wrapIntoObservable, SubjectObs, fromVanillaEvent };
+declare const matchPath: (route: string, path: string) => boolean;
+export { wrapIntoObservable, SubjectObs, fromVanillaEvent, matchPath };

@@ -12,6 +12,5 @@ export declare class InternalRouter {
     getCurrentRoute(): ICurrentRoute;
     navigateTo(path: string, state: Record<string, any>): void;
     private _registerOnHashChange;
-    private _routeMatcher;
     private _navigateTo;
 }

@@ -1,7 +1,7 @@
 import { __decorate } from "tslib";
 import { Injectable } from '@plumejs/core';
 import { StaticRouter } from './staticRouter';
-import { wrapIntoObservable, SubjectObs, fromVanillaEvent } from './utils';
+import { wrapIntoObservable, SubjectObs, fromVanillaEvent, matchPath } from './utils';
 let InternalRouter = class InternalRouter {
     _currentRoute = {
         path: '',
@@ -45,21 +45,12 @@ let InternalRouter = class InternalRouter {
         const state = this._routeStateMap.get(path);
         this._navigateTo(path, state);
     }
-    _routeMatcher(route, path) {
-        if (route) {
-            const _matcher = new RegExp(route.replace(/:[^\s/]+/g, '([\\w-]+)'));
-            return path.match(_matcher);
-        }
-        else {
-            return route === path;
-        }
-    }
     _navigateTo(path, state) {
         const uParams = path.split('/').filter((h) => {
             return h.length > 0;
         });
         const routeArr = StaticRouter.routeList.filter((route) => {
-            if (route.params.length === uParams.length && this._routeMatcher(route.url, path)) {
+            if (route.params.length === uParams.length && matchPath(route.url, path)) {
                 return route;
             }
             else if (route.url === path) {

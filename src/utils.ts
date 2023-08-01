@@ -69,4 +69,13 @@ const fromVanillaEvent = (
   return unsubscribe;
 };
 
-export { wrapIntoObservable, SubjectObs, fromVanillaEvent };
+const matchPath = (route: string, path: string): boolean => {
+  if (route) {
+    const pattern = new RegExp(route.replace(/:[^\s/]+/g, '([\\w-]+)'));
+    return pattern.test(path);
+  } else {
+    return route === path;
+  }
+};
+
+export { wrapIntoObservable, SubjectObs, fromVanillaEvent, matchPath };
