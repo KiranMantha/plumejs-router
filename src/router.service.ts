@@ -12,11 +12,15 @@ export class Router {
     return this.internalRouter.getCurrentRoute();
   }
 
-  navigateTo(path: string, state?: Record<string, any>) {
+  navigateTo(path: string, state?: Record<string, unknown>) {
     this.internalRouter.navigateTo(path, state);
   }
 
-  static registerRoutes(routes: Array<Route>, preloadAllRoutes = false) {
+  static registerRoutes(routes: Array<Route>, preloadAllRoutes = false, isHashBasedRouting = false) {
+    if (isHashBasedRouting) {
+      StaticRouter.isHistoryBasedRouting = !isHashBasedRouting;
+    }
+
     if (Array.isArray(routes)) {
       for (const route of routes) {
         StaticRouter.formatRoute(route);

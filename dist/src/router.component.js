@@ -1,6 +1,7 @@
 import { __decorate, __metadata } from "tslib";
 import { Component, html } from '@plumejs/core';
 import { InternalRouter } from './internalRouter.service';
+import { StaticRouter } from './staticRouter';
 let RouterOutlet = class RouterOutlet {
     internalRouterSrvc;
     _template = '';
@@ -15,8 +16,8 @@ let RouterOutlet = class RouterOutlet {
         this.internalRouterSrvc.startHashChange();
     }
     mount() {
-        const path = window.location.hash.replace(/^#/, '');
-        this.internalRouterSrvc.navigateTo(path, null);
+        const path = StaticRouter.isHistoryBasedRouting ? window.location.pathname : window.location.hash.replace(/^#/, '');
+        this.internalRouterSrvc.navigateTo(path || '/', null);
     }
     unmount() {
         this._templateSubscription();

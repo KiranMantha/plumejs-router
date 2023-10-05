@@ -10,7 +10,7 @@ export declare class InternalRouter {
         subscribe: (fn: (value?: string) => void) => () => void;
     };
     getCurrentRoute(): ICurrentRoute;
-    navigateTo(path: string, state: Record<string, any>): void;
+    navigateTo(path: string, state: Record<string, unknown>): void;
     private _registerOnHashChange;
     private _navigateTo;
 }

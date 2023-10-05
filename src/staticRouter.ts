@@ -2,6 +2,7 @@ import { InternalRouteItem, Route, RouteItem } from './router.model';
 
 export class StaticRouter {
   static routeList: Array<InternalRouteItem> = [];
+  static isHistoryBasedRouting = true;
 
   static checkParams(urlParams: Array<string>, routeItem: RouteItem) {
     let paramMapCount = 0;

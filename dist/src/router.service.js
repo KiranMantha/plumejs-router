@@ -13,7 +13,10 @@ let Router = class Router {
     navigateTo(path, state) {
         this.internalRouter.navigateTo(path, state);
     }
-    static registerRoutes(routes, preloadAllRoutes = false) {
+    static registerRoutes(routes, preloadAllRoutes = false, isHashBasedRouting = false) {
+        if (isHashBasedRouting) {
+            StaticRouter.isHistoryBasedRouting = !isHashBasedRouting;
+        }
         if (Array.isArray(routes)) {
             for (const route of routes) {
                 StaticRouter.formatRoute(route);

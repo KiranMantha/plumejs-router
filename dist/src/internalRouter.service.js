@@ -1,7 +1,7 @@
 import { __decorate } from "tslib";
-import { Injectable } from '@plumejs/core';
+import { Injectable, fromEvent } from '@plumejs/core';
 import { StaticRouter } from './staticRouter';
-import { wrapIntoObservable, SubjectObs, fromVanillaEvent, matchPath } from './utils';
+import { wrapIntoObservable, SubjectObs, matchPath } from './utils';
 let InternalRouter = class InternalRouter {
     _currentRoute = {
         path: '',
@@ -13,7 +13,19 @@ let InternalRouter = class InternalRouter {
     _unSubscribeHashEvent;
     _routeStateMap = new Map();
     startHashChange() {
-        this._unSubscribeHashEvent = fromVanillaEvent(window, 'hashchange', () => {
+        const event = StaticRouter.isHistoryBasedRouting ? 'popstate' : 'hashchange';
+        if (StaticRouter.isHistoryBasedRouting) {
+            window.history.replaceState({}, null, '');
+            const registerOnHashChange = this._registerOnHashChange.bind(this);
+            (function (history) {
+                const pushState = history.pushState;
+                history.pushState = function (...args) {
+                    pushState.apply(history, args);
+                    registerOnHashChange();
+                };
+            })(window.history);
+        }
+        this._unSubscribeHashEvent = fromEvent(window, event, () => {
             this._registerOnHashChange();
         });
     }
@@ -26,22 +38,27 @@ let InternalRouter = class InternalRouter {
     getCurrentRoute() {
         return this._currentRoute;
     }
-    navigateTo(path = '', state) {
+    navigateTo(path = '/', state) {
+        let windowPath = StaticRouter.isHistoryBasedRouting
+            ? window.location.pathname
+            : window.location.hash.replace(/^#/, '');
+        windowPath = windowPath ? windowPath : '/';
         this._routeStateMap.clear();
-        if (path) {
-            const windowHash = window.location.hash.replace(/^#/, '');
-            if (windowHash === path) {
+        this._routeStateMap.set(path, state);
+        if (windowPath === path) {
+            this._template.next('');
+            setTimeout(() => {
                 this._navigateTo(path, state);
-            }
-            this._routeStateMap.set(path, state);
-            window.location.hash = '#' + path;
+            });
         }
         else {
-            this._navigateTo(path, state);
+            StaticRouter.isHistoryBasedRouting
+                ? window.history.pushState(state, '', path)
+                : (window.location.hash = '#' + path);
         }
     }
     _registerOnHashChange() {
-        const path = window.location.hash.replace(/^#/, '');
+        const path = StaticRouter.isHistoryBasedRouting ? window.location.pathname : window.location.hash.replace(/^#/, '');
         const state = this._routeStateMap.get(path);
         this._navigateTo(path, state);
     }
@@ -67,9 +84,15 @@ let InternalRouter = class InternalRouter {
                 const _params = StaticRouter.checkParams(uParams, routeItem);
                 if (Object.keys(_params).length > 0 || path) {
                     this._currentRoute.routeParams = new Map(Object.entries(_params));
-                    const entries = window.location.hash.split('?')[1]
-                        ? new URLSearchParams(window.location.hash.split('?')[1]).entries()
-                        : [];
+                    let entries = [];
+                    if (StaticRouter.isHistoryBasedRouting) {
+                        entries = new URLSearchParams(window.location.search).entries();
+                    }
+                    else {
+                        entries = window.location.hash.split('?')[1]
+                            ? new URLSearchParams(window.location.hash.split('?')[1]).entries()
+                            : [];
+                    }
                     this._currentRoute.queryParams = new Map(entries);
                     if (!routeItem.isRegistered) {
                         if (routeItem.templatePath) {
@@ -77,6 +100,9 @@ let InternalRouter = class InternalRouter {
                                 routeItem.isRegistered = true;
                                 this._template.next(routeItem.template);
                             });
+                        }
+                        else if (routeItem.redirectTo) {
+                            this.navigateTo(routeItem.redirectTo, state);
                         }
                     }
                     else {

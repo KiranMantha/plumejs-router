@@ -45,13 +45,6 @@ const wrapIntoObservable = (value) => {
     }
     return ofObs(value);
 };
-const fromVanillaEvent = (target, eventName, onNext, options = false) => {
-    target.addEventListener(eventName, onNext, options);
-    const unsubscribe = () => {
-        target.removeEventListener(eventName, onNext, options);
-    };
-    return unsubscribe;
-};
 const matchPath = (route, path) => {
     if (route && path) {
         const pattern = new RegExp(route.replace(/:[^\s/]+/g, '([\\w-]+)'));
@@ -59,4 +52,4 @@ const matchPath = (route, path) => {
     }
     return false;
 };
-export { wrapIntoObservable, SubjectObs, fromVanillaEvent, matchPath };
+export { wrapIntoObservable, SubjectObs, matchPath };

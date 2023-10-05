@@ -1,5 +1,6 @@
 import { Component, html, IHooks } from '@plumejs/core';
 import { InternalRouter } from './internalRouter.service';
+import { StaticRouter } from './staticRouter';
 
 @Component({
   selector: 'router-outlet',
@@ -15,13 +16,12 @@ class RouterOutlet implements IHooks {
     this._templateSubscription = this.internalRouterSrvc.getTemplate().subscribe((tmpl: string) => {
       this._template = tmpl;
     });
-
     this.internalRouterSrvc.startHashChange();
   }
 
   mount() {
-    const path = window.location.hash.replace(/^#/, '');
-    this.internalRouterSrvc.navigateTo(path, null);
+    const path = StaticRouter.isHistoryBasedRouting ? window.location.pathname : window.location.hash.replace(/^#/, '');
+    this.internalRouterSrvc.navigateTo(path || '/', null);
   }
 
   unmount() {
