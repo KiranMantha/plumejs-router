@@ -1,7 +1,7 @@
 import { __decorate } from "tslib";
-import { Injectable, fromEvent } from '@plumejs/core';
+import { BehaviourSubjectObs, Injectable, SubjectObs, fromEvent, wrapIntoObservable } from '@plumejs/core';
 import { StaticRouter } from './staticRouter';
-import { wrapIntoObservable, SubjectObs, matchPath } from './utils';
+import { matchPath } from './utils';
 let InternalRouter = class InternalRouter {
     _currentRoute = {
         path: '',
@@ -9,28 +9,24 @@ let InternalRouter = class InternalRouter {
         queryParams: new Map(),
         state: {}
     };
-    _template = new SubjectObs();
-    _unSubscribeHashEvent;
+    _template = new BehaviourSubjectObs('');
+    _navigationEndEvent = new SubjectObs();
     _routeStateMap = new Map();
-    startHashChange() {
+    listenRouteChanges() {
         const event = StaticRouter.isHistoryBasedRouting ? 'popstate' : 'hashchange';
         if (StaticRouter.isHistoryBasedRouting) {
             window.history.replaceState({}, null, '');
-            const registerOnHashChange = this._registerOnHashChange.bind(this);
-            (function (history) {
+            (function (history, fn) {
                 const pushState = history.pushState;
                 history.pushState = function (...args) {
                     pushState.apply(history, args);
-                    registerOnHashChange();
+                    fn();
                 };
-            })(window.history);
+            })(window.history, this._registerOnHashChange.bind(this));
         }
-        this._unSubscribeHashEvent = fromEvent(window, event, () => {
+        return fromEvent(window, event, () => {
             this._registerOnHashChange();
         });
-    }
-    stopHashChange() {
-        this._unSubscribeHashEvent();
     }
     getTemplate() {
         return this._template.asObservable();
@@ -46,16 +42,16 @@ let InternalRouter = class InternalRouter {
         this._routeStateMap.clear();
         this._routeStateMap.set(path, state);
         if (windowPath === path) {
-            this._template.next('');
-            setTimeout(() => {
-                this._navigateTo(path, state);
-            });
+            this._navigateTo(path, state);
         }
         else {
             StaticRouter.isHistoryBasedRouting
                 ? window.history.pushState(state, '', path)
                 : (window.location.hash = '#' + path);
         }
+    }
+    onNavigationEnd() {
+        return this._navigationEndEvent.asObservable();
     }
     _registerOnHashChange() {
         const path = StaticRouter.isHistoryBasedRouting ? window.location.pathname : window.location.hash.replace(/^#/, '');
@@ -94,11 +90,15 @@ let InternalRouter = class InternalRouter {
                             : [];
                     }
                     this._currentRoute.queryParams = new Map(entries);
+                    const triggerNavigation = (routeItem) => {
+                        routeItem.isRegistered = true;
+                        this._template.next(routeItem.template);
+                        this._navigationEndEvent.next(null);
+                    };
                     if (!routeItem.isRegistered) {
                         if (routeItem.templatePath) {
                             wrapIntoObservable(routeItem.templatePath()).subscribe(() => {
-                                routeItem.isRegistered = true;
-                                this._template.next(routeItem.template);
+                                triggerNavigation(routeItem);
                             });
                         }
                         else if (routeItem.redirectTo) {
@@ -106,10 +106,7 @@ let InternalRouter = class InternalRouter {
                         }
                     }
                     else {
-                        this._template.next('');
-                        setTimeout(() => {
-                            this._template.next(routeItem.template);
-                        });
+                        triggerNavigation(routeItem);
                     }
                 }
                 else {

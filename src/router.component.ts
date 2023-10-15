@@ -1,22 +1,28 @@
-import { Component, html, IHooks } from '@plumejs/core';
+import { Component, html, IHooks, Renderer, Subscriptions } from '@plumejs/core';
 import { InternalRouter } from './internalRouter.service';
 import { StaticRouter } from './staticRouter';
 
 @Component({
   selector: 'router-outlet',
-  deps: [InternalRouter]
+  deps: [InternalRouter, Renderer]
 })
 class RouterOutlet implements IHooks {
   private _template = '';
-  private _templateSubscription: () => void;
+  private _subscriptions = new Subscriptions();
 
-  constructor(private internalRouterSrvc: InternalRouter) {}
+  constructor(private internalRouterSrvc: InternalRouter, private renderer: Renderer) {}
 
   beforeMount() {
-    this._templateSubscription = this.internalRouterSrvc.getTemplate().subscribe((tmpl: string) => {
-      this._template = tmpl;
-    });
-    this.internalRouterSrvc.startHashChange();
+    this._subscriptions.add(
+      this.internalRouterSrvc.getTemplate().subscribe((tmpl: string) => {
+        if (this._template !== tmpl) {
+          this._template = tmpl;
+        } else {
+          this.refreshRouterOutletComponent();
+        }
+      })
+    );
+    this._subscriptions.add(this.internalRouterSrvc.listenRouteChanges());
   }
 
   mount() {
@@ -25,8 +31,19 @@ class RouterOutlet implements IHooks {
   }
 
   unmount() {
-    this._templateSubscription();
-    this.internalRouterSrvc.stopHashChange();
+    this._subscriptions.unsubscribe();
+  }
+
+  refreshRouterOutletComponent() {
+    if (this.renderer.shadowRoot.children.length) {
+      const event = new CustomEvent('refresh_component', {
+        detail: {},
+        bubbles: false,
+        cancelable: false,
+        composed: false
+      });
+      this.renderer.shadowRoot.children[0].dispatchEvent(event);
+    }
   }
 
   render() {

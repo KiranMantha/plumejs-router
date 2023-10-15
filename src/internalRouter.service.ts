@@ -1,7 +1,7 @@
-import { Injectable, fromEvent } from '@plumejs/core';
-import { ICurrentRoute } from './router.model';
+import { BehaviourSubjectObs, Injectable, SubjectObs, fromEvent, wrapIntoObservable } from '@plumejs/core';
+import { ICurrentRoute, InternalRouteItem } from './router.model';
 import { StaticRouter } from './staticRouter';
-import { wrapIntoObservable, SubjectObs, matchPath } from './utils';
+import { matchPath } from './utils';
 
 @Injectable()
 export class InternalRouter {
@@ -11,30 +11,25 @@ export class InternalRouter {
     queryParams: new Map(),
     state: {}
   };
-  private _template = new SubjectObs<string>();
-  private _unSubscribeHashEvent: () => void;
+  private _template = new BehaviourSubjectObs('');
+  private _navigationEndEvent = new SubjectObs();
   private _routeStateMap = new Map();
 
-  startHashChange() {
+  listenRouteChanges() {
     const event = StaticRouter.isHistoryBasedRouting ? 'popstate' : 'hashchange';
     if (StaticRouter.isHistoryBasedRouting) {
       window.history.replaceState({}, null, '');
-      const registerOnHashChange = this._registerOnHashChange.bind(this);
-      (function (history) {
+      (function (history, fn) {
         const pushState = history.pushState;
         history.pushState = function (...args) {
           pushState.apply(history, args);
-          registerOnHashChange();
+          fn();
         };
-      })(window.history);
+      })(window.history, this._registerOnHashChange.bind(this));
     }
-    this._unSubscribeHashEvent = fromEvent(window, event, () => {
+    return fromEvent(window, event, () => {
       this._registerOnHashChange();
     });
-  }
-
-  stopHashChange() {
-    this._unSubscribeHashEvent();
   }
 
   getTemplate(): { subscribe: (fn: (value?: string) => void) => () => void } {
@@ -53,15 +48,16 @@ export class InternalRouter {
     this._routeStateMap.clear();
     this._routeStateMap.set(path, state);
     if (windowPath === path) {
-      this._template.next('');
-      setTimeout(() => {
-        this._navigateTo(path, state);
-      });
+      this._navigateTo(path, state);
     } else {
       StaticRouter.isHistoryBasedRouting
         ? window.history.pushState(state, '', path)
         : (window.location.hash = '#' + path);
     }
+  }
+
+  onNavigationEnd() {
+    return this._navigationEndEvent.asObservable();
   }
 
   private _registerOnHashChange() {
@@ -99,20 +95,21 @@ export class InternalRouter {
               : [];
           }
           this._currentRoute.queryParams = new Map(entries);
+          const triggerNavigation = (routeItem: InternalRouteItem) => {
+            routeItem.isRegistered = true;
+            this._template.next(routeItem.template);
+            this._navigationEndEvent.next(null);
+          };
           if (!routeItem.isRegistered) {
             if (routeItem.templatePath) {
               wrapIntoObservable(routeItem.templatePath()).subscribe(() => {
-                routeItem.isRegistered = true;
-                this._template.next(routeItem.template);
+                triggerNavigation(routeItem);
               });
             } else if (routeItem.redirectTo) {
               this.navigateTo(routeItem.redirectTo, state);
             }
           } else {
-            this._template.next('');
-            setTimeout(() => {
-              this._template.next(routeItem.template);
-            });
+            triggerNavigation(routeItem);
           }
         } else {
           this.navigateTo(routeItem.redirectTo, state);

@@ -5,5 +5,8 @@ export declare class Router {
     constructor(internalRouter: InternalRouter);
     getCurrentRoute(): ICurrentRoute;
     navigateTo(path: string, state?: Record<string, unknown>): void;
+    onNavigationEnd(): {
+        subscribe: (fn: (param?: unknown) => void) => () => void;
+    };
     static registerRoutes(routes: Array<Route>, preloadAllRoutes?: boolean, isHashBasedRouting?: boolean): void;
 }

@@ -16,6 +16,10 @@ export class Router {
     this.internalRouter.navigateTo(path, state);
   }
 
+  onNavigationEnd() {
+    return this.internalRouter.onNavigationEnd();
+  }
+
   static registerRoutes(routes: Array<Route>, preloadAllRoutes = false, isHashBasedRouting = false) {
     if (isHashBasedRouting) {
       StaticRouter.isHistoryBasedRouting = !isHashBasedRouting;
