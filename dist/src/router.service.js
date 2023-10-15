@@ -16,7 +16,7 @@ let Router = class Router {
     onNavigationEnd() {
         return this.internalRouter.onNavigationEnd();
     }
-    static registerRoutes(routes, preloadAllRoutes = false, isHashBasedRouting = false) {
+    static registerRoutes({ routes, preloadAllRoutes = false, isHashBasedRouting = false }) {
         if (isHashBasedRouting) {
             StaticRouter.isHistoryBasedRouting = !isHashBasedRouting;
         }

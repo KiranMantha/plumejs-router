@@ -20,7 +20,15 @@ export class Router {
     return this.internalRouter.onNavigationEnd();
   }
 
-  static registerRoutes(routes: Array<Route>, preloadAllRoutes = false, isHashBasedRouting = false) {
+  static registerRoutes({
+    routes,
+    preloadAllRoutes = false,
+    isHashBasedRouting = false
+  }: {
+    routes: Array<Route>;
+    preloadAllRoutes?: boolean;
+    isHashBasedRouting?: boolean;
+  }) {
     if (isHashBasedRouting) {
       StaticRouter.isHistoryBasedRouting = !isHashBasedRouting;
     }
