@@ -8,7 +8,9 @@ export declare class InternalRouter {
     getTemplate(): {
         subscribe: (fn: (value?: string) => void) => () => void;
     };
-    getCurrentRoute(): ICurrentRoute;
+    getCurrentRoute(): {
+        subscribe: (fn: (value?: ICurrentRoute) => void) => () => void;
+    };
     navigateTo(path: string, state: Record<string, unknown>): void;
     onNavigationEnd(): {
         subscribe: (fn: (param?: unknown) => void) => () => void;

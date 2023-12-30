@@ -5,12 +5,12 @@ import { matchPath } from './utils';
 
 @Injectable()
 export class InternalRouter {
-  private _currentRoute: ICurrentRoute = {
+  private _currentRoute = new BehaviourSubjectObs<ICurrentRoute>({
     path: '',
     routeParams: new Map(),
     queryParams: new Map(),
     state: {}
-  };
+  });
   private _template = new BehaviourSubjectObs('');
   private _navigationEndEvent = new SubjectObs();
   private _routeStateMap = new Map();
@@ -36,8 +36,8 @@ export class InternalRouter {
     return this._template.asObservable();
   }
 
-  getCurrentRoute(): ICurrentRoute {
-    return this._currentRoute;
+  getCurrentRoute(): { subscribe: (fn: (value?: ICurrentRoute) => void) => () => void } {
+    return this._currentRoute.asObservable();
   }
 
   navigateTo(path = '/', state: Record<string, unknown>) {
@@ -67,6 +67,7 @@ export class InternalRouter {
   }
 
   private _navigateTo(path: string, state: Record<string, unknown>) {
+    const currentRouteData: Partial<ICurrentRoute> = {};
     const uParams = path.split('/').filter((h) => {
       return h.length > 0;
     });
@@ -79,13 +80,13 @@ export class InternalRouter {
     });
     const routeItem = routeArr.length > 0 ? routeArr[0] : null;
     if (routeItem) {
-      this._currentRoute.path = path;
-      this._currentRoute.state = { ...(state || {}) };
+      currentRouteData.path = path;
+      currentRouteData.state = { ...(state || {}) };
       wrapIntoObservable(routeItem.canActivate()).subscribe((val: boolean) => {
         if (!val) return;
         const _params = StaticRouter.checkParams(uParams, routeItem);
         if (Object.keys(_params).length > 0 || path) {
-          this._currentRoute.routeParams = new Map(Object.entries(_params));
+          currentRouteData.routeParams = new Map(Object.entries(_params));
           let entries: Iterable<[string, string]> = [];
           if (StaticRouter.isHistoryBasedRouting) {
             entries = new URLSearchParams(window.location.search).entries();
@@ -94,9 +95,10 @@ export class InternalRouter {
               ? new URLSearchParams(window.location.hash.split('?')[1]).entries()
               : [];
           }
-          this._currentRoute.queryParams = new Map(entries);
+          currentRouteData.queryParams = new Map(entries);
           const triggerNavigation = (routeItem: InternalRouteItem) => {
             routeItem.isRegistered = true;
+            this._currentRoute.next(currentRouteData as ICurrentRoute);
             this._template.next(routeItem.template);
             this._navigationEndEvent.next(null);
           };

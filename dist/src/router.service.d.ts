@@ -1,9 +1,11 @@
 import { InternalRouter } from './internalRouter.service';
-import { ICurrentRoute, Route } from './router.model';
+import { Route } from './router.model';
 export declare class Router {
     private internalRouter;
     constructor(internalRouter: InternalRouter);
-    getCurrentRoute(): ICurrentRoute;
+    getCurrentRoute(): {
+        subscribe: (fn: (value?: import("./router.model").ICurrentRoute) => void) => () => void;
+    };
     navigateTo(path: string, state?: Record<string, unknown>): void;
     onNavigationEnd(): {
         subscribe: (fn: (param?: unknown) => void) => () => void;

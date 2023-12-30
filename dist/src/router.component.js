@@ -16,9 +16,6 @@ let RouterOutlet = class RouterOutlet {
             if (this._template !== tmpl) {
                 this._template = tmpl;
             }
-            else {
-                this.refreshRouterOutletComponent();
-            }
         }));
         this._subscriptions.add(this.internalRouterSrvc.listenRouteChanges());
     }
@@ -28,17 +25,6 @@ let RouterOutlet = class RouterOutlet {
     }
     unmount() {
         this._subscriptions.unsubscribe();
-    }
-    refreshRouterOutletComponent() {
-        if (this.renderer.shadowRoot.children.length) {
-            const event = new CustomEvent('refresh_component', {
-                detail: {},
-                bubbles: false,
-                cancelable: false,
-                composed: false
-            });
-            this.renderer.shadowRoot.children[0].dispatchEvent(event);
-        }
     }
     render() {
         if (this._template) {

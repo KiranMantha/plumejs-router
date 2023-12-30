@@ -3,12 +3,12 @@ import { BehaviourSubjectObs, Injectable, SubjectObs, fromEvent, wrapIntoObserva
 import { StaticRouter } from './staticRouter';
 import { matchPath } from './utils';
 let InternalRouter = class InternalRouter {
-    _currentRoute = {
+    _currentRoute = new BehaviourSubjectObs({
         path: '',
         routeParams: new Map(),
         queryParams: new Map(),
         state: {}
-    };
+    });
     _template = new BehaviourSubjectObs('');
     _navigationEndEvent = new SubjectObs();
     _routeStateMap = new Map();
@@ -32,7 +32,7 @@ let InternalRouter = class InternalRouter {
         return this._template.asObservable();
     }
     getCurrentRoute() {
-        return this._currentRoute;
+        return this._currentRoute.asObservable();
     }
     navigateTo(path = '/', state) {
         let windowPath = StaticRouter.isHistoryBasedRouting
@@ -59,6 +59,7 @@ let InternalRouter = class InternalRouter {
         this._navigateTo(path, state);
     }
     _navigateTo(path, state) {
+        const currentRouteData = {};
         const uParams = path.split('/').filter((h) => {
             return h.length > 0;
         });
@@ -72,14 +73,14 @@ let InternalRouter = class InternalRouter {
         });
         const routeItem = routeArr.length > 0 ? routeArr[0] : null;
         if (routeItem) {
-            this._currentRoute.path = path;
-            this._currentRoute.state = { ...(state || {}) };
+            currentRouteData.path = path;
+            currentRouteData.state = { ...(state || {}) };
             wrapIntoObservable(routeItem.canActivate()).subscribe((val) => {
                 if (!val)
                     return;
                 const _params = StaticRouter.checkParams(uParams, routeItem);
                 if (Object.keys(_params).length > 0 || path) {
-                    this._currentRoute.routeParams = new Map(Object.entries(_params));
+                    currentRouteData.routeParams = new Map(Object.entries(_params));
                     let entries = [];
                     if (StaticRouter.isHistoryBasedRouting) {
                         entries = new URLSearchParams(window.location.search).entries();
@@ -89,9 +90,10 @@ let InternalRouter = class InternalRouter {
                             ? new URLSearchParams(window.location.hash.split('?')[1]).entries()
                             : [];
                     }
-                    this._currentRoute.queryParams = new Map(entries);
+                    currentRouteData.queryParams = new Map(entries);
                     const triggerNavigation = (routeItem) => {
                         routeItem.isRegistered = true;
+                        this._currentRoute.next(currentRouteData);
                         this._template.next(routeItem.template);
                         this._navigationEndEvent.next(null);
                     };

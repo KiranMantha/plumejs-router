@@ -17,8 +17,6 @@ class RouterOutlet implements IHooks {
       this.internalRouterSrvc.getTemplate().subscribe((tmpl: string) => {
         if (this._template !== tmpl) {
           this._template = tmpl;
-        } else {
-          this.refreshRouterOutletComponent();
         }
       })
     );
@@ -32,18 +30,6 @@ class RouterOutlet implements IHooks {
 
   unmount() {
     this._subscriptions.unsubscribe();
-  }
-
-  refreshRouterOutletComponent() {
-    if (this.renderer.shadowRoot.children.length) {
-      const event = new CustomEvent('refresh_component', {
-        detail: {},
-        bubbles: false,
-        cancelable: false,
-        composed: false
-      });
-      this.renderer.shadowRoot.children[0].dispatchEvent(event);
-    }
   }
 
   render() {
