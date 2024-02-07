@@ -1,5 +1,6 @@
 export class StaticRouter {
     static routeList = [];
+    static isHistoryBasedRouting = true;
     static checkParams(urlParams, routeItem) {
         let paramMapCount = 0;
         const paramsObject = {}, paramCount = routeItem.paramCount;

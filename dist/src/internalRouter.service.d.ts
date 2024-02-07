@@ -2,16 +2,19 @@ import { ICurrentRoute } from './router.model';
 export declare class InternalRouter {
     private _currentRoute;
     private _template;
-    private _unSubscribeHashEvent;
+    private _navigationEndEvent;
     private _routeStateMap;
-    startHashChange(): void;
-    stopHashChange(): void;
+    listenRouteChanges(): () => void;
     getTemplate(): {
         subscribe: (fn: (value?: string) => void) => () => void;
     };
-    getCurrentRoute(): ICurrentRoute;
-    navigateTo(path: string, state: Record<string, any>): void;
+    getCurrentRoute(): {
+        subscribe: (fn: (value?: ICurrentRoute) => void) => () => void;
+    };
+    navigateTo(path: string, state: Record<string, unknown>): void;
+    onNavigationEnd(): {
+        subscribe: (fn: (param?: unknown) => void) => () => void;
+    };
     private _registerOnHashChange;
-    private _routeMatcher;
     private _navigateTo;
 }

@@ -1,26 +1,30 @@
 import { __decorate, __metadata } from "tslib";
-import { Component, html } from '@plumejs/core';
+import { Component, html, Renderer, Subscriptions } from '@plumejs/core';
 import { InternalRouter } from './internalRouter.service';
+import { StaticRouter } from './staticRouter';
 let RouterOutlet = class RouterOutlet {
     internalRouterSrvc;
+    renderer;
     _template = '';
-    _templateSubscription;
-    constructor(internalRouterSrvc) {
+    _subscriptions = new Subscriptions();
+    constructor(internalRouterSrvc, renderer) {
         this.internalRouterSrvc = internalRouterSrvc;
+        this.renderer = renderer;
     }
     beforeMount() {
-        this._templateSubscription = this.internalRouterSrvc.getTemplate().subscribe((tmpl) => {
-            this._template = tmpl;
-        });
-        this.internalRouterSrvc.startHashChange();
+        this._subscriptions.add(this.internalRouterSrvc.getTemplate().subscribe((tmpl) => {
+            if (this._template !== tmpl) {
+                this._template = tmpl;
+            }
+        }));
+        this._subscriptions.add(this.internalRouterSrvc.listenRouteChanges());
     }
     mount() {
-        const path = window.location.hash.replace(/^#/, '');
-        this.internalRouterSrvc.navigateTo(path, null);
+        const path = StaticRouter.isHistoryBasedRouting ? window.location.pathname : window.location.hash.replace(/^#/, '');
+        this.internalRouterSrvc.navigateTo(path || '/', null);
     }
     unmount() {
-        this._templateSubscription();
-        this.internalRouterSrvc.stopHashChange();
+        this._subscriptions.unsubscribe();
     }
     render() {
         if (this._template) {
@@ -36,7 +40,7 @@ let RouterOutlet = class RouterOutlet {
 RouterOutlet = __decorate([
     Component({
         selector: 'router-outlet',
-        deps: [InternalRouter]
+        deps: [InternalRouter, Renderer]
     }),
-    __metadata("design:paramtypes", [InternalRouter])
+    __metadata("design:paramtypes", [InternalRouter, Renderer])
 ], RouterOutlet);

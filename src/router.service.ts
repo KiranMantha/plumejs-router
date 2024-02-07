@@ -1,22 +1,38 @@
 //https://krasimirtsonev.com/blog/article/A-modern-JavaScript-router-in-100-lines-history-api-pushState-hash-url
 import { Injectable } from '@plumejs/core';
 import { InternalRouter } from './internalRouter.service';
-import { ICurrentRoute, Route } from './router.model';
+import { Route } from './router.model';
 import { StaticRouter } from './staticRouter';
 
 @Injectable({ deps: [InternalRouter] })
 export class Router {
   constructor(private internalRouter: InternalRouter) {}
 
-  getCurrentRoute(): ICurrentRoute {
+  getCurrentRoute() {
     return this.internalRouter.getCurrentRoute();
   }
 
-  navigateTo(path: string, state?: Record<string, any>) {
+  navigateTo(path: string, state?: Record<string, unknown>) {
     this.internalRouter.navigateTo(path, state);
   }
 
-  static registerRoutes(routes: Array<Route>, preloadAllRoutes = false) {
+  onNavigationEnd() {
+    return this.internalRouter.onNavigationEnd();
+  }
+
+  static registerRoutes({
+    routes,
+    preloadAllRoutes = false,
+    isHashBasedRouting = false
+  }: {
+    routes: Array<Route>;
+    preloadAllRoutes?: boolean;
+    isHashBasedRouting?: boolean;
+  }) {
+    if (isHashBasedRouting) {
+      StaticRouter.isHistoryBasedRouting = !isHashBasedRouting;
+    }
+
     if (Array.isArray(routes)) {
       for (const route of routes) {
         StaticRouter.formatRoute(route);
