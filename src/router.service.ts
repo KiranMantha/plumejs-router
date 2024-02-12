@@ -8,8 +8,8 @@ import { StaticRouter } from './staticRouter';
 export class Router {
   constructor(private internalRouter: InternalRouter) {}
 
-  getCurrentRouteInfo() {
-    return this.internalRouter.getCurrentRouteInfo();
+  getCurrentRoute() {
+    return this.internalRouter.getCurrentRoute();
   }
 
   navigateTo(path: string, state?: Record<string, unknown>) {

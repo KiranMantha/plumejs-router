@@ -3,7 +3,7 @@ import { Route } from './router.model';
 export declare class Router {
     private internalRouter;
     constructor(internalRouter: InternalRouter);
-    getCurrentRouteInfo(): {
+    getCurrentRoute(): {
         subscribe: (fn: (value?: import("./router.model").ICurrentRoute) => void) => () => void;
     };
     navigateTo(path: string, state?: Record<string, unknown>): void;

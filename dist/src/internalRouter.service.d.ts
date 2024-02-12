@@ -8,7 +8,7 @@ export declare class InternalRouter {
     getTemplate(): {
         subscribe: (fn: (value?: string) => void) => () => void;
     };
-    getCurrentRouteInfo(): {
+    getCurrentRoute(): {
         subscribe: (fn: (value?: ICurrentRoute) => void) => () => void;
     };
     navigateTo(path: string, state: Record<string, unknown>): void;

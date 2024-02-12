@@ -31,7 +31,7 @@ let InternalRouter = class InternalRouter {
     getTemplate() {
         return this._template.asObservable();
     }
-    getCurrentRouteInfo() {
+    getCurrentRoute() {
         return this._currentRoute.asObservable();
     }
     navigateTo(path = '/', state) {

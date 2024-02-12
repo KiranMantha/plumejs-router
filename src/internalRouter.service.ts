@@ -36,7 +36,7 @@ export class InternalRouter {
     return this._template.asObservable();
   }
 
-  getCurrentRouteInfo(): { subscribe: (fn: (value?: ICurrentRoute) => void) => () => void } {
+  getCurrentRoute(): { subscribe: (fn: (value?: ICurrentRoute) => void) => () => void } {
     return this._currentRoute.asObservable();
   }
 
