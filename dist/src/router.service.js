@@ -7,8 +7,8 @@ let Router = class Router {
     constructor(internalRouter) {
         this.internalRouter = internalRouter;
     }
-    getCurrentRoute() {
-        return this.internalRouter.getCurrentRoute();
+    getCurrentRouteInfo() {
+        return this.internalRouter.getCurrentRouteInfo();
     }
     navigateTo(path, state) {
         this.internalRouter.navigateTo(path, state);
