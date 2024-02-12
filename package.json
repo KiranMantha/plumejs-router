@@ -37,7 +37,7 @@
   },
   "homepage": "https://github.com/KiranMantha/plumejs-router#readme",
   "dependencies": {
-    "@plumejs/core": "^4.0.0"
+    "@plumejs/core": "^4.1.0"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
