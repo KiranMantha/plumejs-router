@@ -2,13 +2,21 @@
   "name": "@plumejs/router",
   "version": "4.1.1",
   "description": "A routing mechanism for PlumeJs application.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "type": "module",
+  "sideEffects": false,
   "files": [
     "dist/**/*"
   ],
-  "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "exports": "./dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "node": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "types": "./dist/index.d.ts",
   "publishConfig": {
     "access": "public"
