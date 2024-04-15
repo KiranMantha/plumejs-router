@@ -1,5 +1,5 @@
 import { __decorate, __metadata } from "tslib";
-import { Component, html, Renderer, Subscriptions } from '@plumejs/core';
+import { Component, Renderer, Subscriptions } from '@plumejs/core';
 import { InternalRouter } from './internalRouter.service';
 import { StaticRouter } from './staticRouter';
 let RouterOutlet = class RouterOutlet {
@@ -27,14 +27,7 @@ let RouterOutlet = class RouterOutlet {
         this._subscriptions.unsubscribe();
     }
     render() {
-        if (this._template) {
-            const stringArray = [`${this._template}`];
-            stringArray.raw = [`${this._template}`];
-            return html(stringArray);
-        }
-        else {
-            return html ``;
-        }
+        return this._template;
     }
 };
 RouterOutlet = __decorate([
