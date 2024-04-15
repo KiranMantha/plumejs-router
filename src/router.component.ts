@@ -1,4 +1,4 @@
-import { Component, html, IHooks, Renderer, Subscriptions } from '@plumejs/core';
+import { Component, IHooks, Renderer, Subscriptions } from '@plumejs/core';
 import { InternalRouter } from './internalRouter.service';
 import { StaticRouter } from './staticRouter';
 
@@ -33,12 +33,6 @@ class RouterOutlet implements IHooks {
   }
 
   render() {
-    if (this._template) {
-      const stringArray = [`${this._template}`] as any;
-      stringArray.raw = [`${this._template}`];
-      return html(stringArray);
-    } else {
-      return html``;
-    }
+    return this._template;
   }
 }

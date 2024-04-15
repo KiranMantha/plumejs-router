@@ -8,7 +8,7 @@ export declare class Router {
     };
     navigateTo(path: string, state?: Record<string, unknown>): void;
     onNavigationEnd(): {
-        subscribe: (fn: (param?: unknown) => void) => () => void;
+        subscribe: (fn: (() => void) | ((param: unknown) => void)) => () => void;
     };
     static registerRoutes({ routes, preloadAllRoutes, isHashBasedRouting }: {
         routes: Array<Route>;
