@@ -1,12 +1,15 @@
 //https://krasimirtsonev.com/blog/article/A-modern-JavaScript-router-in-100-lines-history-api-pushState-hash-url
 import { Injectable } from '@plumejs/core';
 import { InternalRouter } from './internalRouter.service';
+import { registerRouterOutlet } from './router.component';
 import { Route } from './router.model';
 import { StaticRouter } from './staticRouter';
 
 @Injectable({ deps: [InternalRouter] })
 export class Router {
-  constructor(private internalRouter: InternalRouter) {}
+  constructor(private internalRouter: InternalRouter) {
+    registerRouterOutlet();
+  }
 
   getCurrentRoute() {
     return this.internalRouter.getCurrentRoute();
