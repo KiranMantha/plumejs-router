@@ -2,10 +2,6 @@ import { Component, IHooks, Renderer, Subscriptions } from '@plumejs/core';
 import { InternalRouter } from './internalRouter.service';
 import { StaticRouter } from './staticRouter';
 
-@Component({
-  selector: 'router-outlet',
-  deps: [InternalRouter, Renderer]
-})
 class RouterOutlet implements IHooks {
   private _template = '';
   private _subscriptions = new Subscriptions();
@@ -36,3 +32,12 @@ class RouterOutlet implements IHooks {
     return this._template;
   }
 }
+
+const registerRouterOutlet = () => {
+  Component({
+    selector: 'router-outlet',
+    deps: [InternalRouter, Renderer]
+  })(RouterOutlet)
+}
+
+export { registerRouterOutlet };

@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "ESNext"
-    ],
+    "lib": ["dom", "dom.iterable", "ESNext"],
     "module": "ESNext",
     "target": "ESNext",
     "moduleResolution": "node",
@@ -21,13 +17,9 @@
     "importHelpers": true,
     "noEmitOnError": true,
     "skipLibCheck": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ]
+    "isolatedModules": true,
+    "emitDeclarationOnly": true,
+    "typeRoots": ["node_modules/@types"]
   },
-  "exclude": [
-    "__tests__",
-    "dist",
-    "node_modules"
-  ]
+  "exclude": ["__tests__", "dist", "node_modules", "vite.config.js"]
 }
