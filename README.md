@@ -13,4 +13,4 @@
 
 ## Documentation
 
-For documentation please visit [wiki](https://github.com/KiranMantha/plumejs-router/wiki)
+For documentation, please visit [wiki](https://github.com/KiranMantha/plumejs-router/wiki)
