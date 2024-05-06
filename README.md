@@ -4,7 +4,7 @@
 
 [![NPM version badge](https://img.shields.io/npm/v/@plumejs/router)](https://www.npmjs.com/package/@plumejs/router)
 [![NPM downloads badge](https://img.shields.io/npm/dw/%40plumejs/router?color=blue)](https://www.npmjs.com/package/@plumejs/router)
-[![Dependencies](https://img.shields.io/badge/Dependencies-%40plumejs%2Fcore-green)](https://GitHub.com/KiranMantha/plumejs)
+[![Dependencies](https://img.shields.io/badge/Dependencies-%40plumejs%2Fcore-blue)](https://GitHub.com/KiranMantha/plumejs)
 
 [![GitHub watchers badge](https://img.shields.io/github/watchers/kiranmantha/plumejs-router?style=social)](https://github.com/kiranmantha/plumejs-router/watchers)
 [![GitHub stars badge](https://img.shields.io/github/stars/kiranmantha/plumejs-router.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/kiranmantha/plumejs-router/stargazers/)
