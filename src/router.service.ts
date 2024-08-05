@@ -5,6 +5,16 @@ import { registerRouterOutlet } from './router.component';
 import { Route } from './router.model';
 import { StaticRouter } from './staticRouter';
 
+function normalizeRoute(route: Route, parentPath = '') {
+  // // Ensure the path starts with a slash
+  const fullPath = `${parentPath}/${route.path}`.replace(/\/+/g, '/');
+  StaticRouter.formatRoute({ ...route, path: fullPath });
+
+  (route.children || []).forEach((childRoute) => {
+    normalizeRoute(childRoute, fullPath);
+  });
+}
+
 @Injectable({ deps: [InternalRouter] })
 export class Router {
   constructor(private internalRouter: InternalRouter) {
@@ -23,22 +33,10 @@ export class Router {
     return this.internalRouter.onNavigationEnd();
   }
 
-  static registerRoutes({
-    routes,
-    preloadAllRoutes = false,
-    isHashBasedRouting = false
-  }: {
-    routes: Array<Route>;
-    preloadAllRoutes?: boolean;
-    isHashBasedRouting?: boolean;
-  }) {
-    if (isHashBasedRouting) {
-      StaticRouter.isHistoryBasedRouting = !isHashBasedRouting;
-    }
-
+  static registerRoutes({ routes, preloadAllRoutes = false }: { routes: Array<Route>; preloadAllRoutes?: boolean }) {
     if (Array.isArray(routes)) {
       for (const route of routes) {
-        StaticRouter.formatRoute(route);
+        normalizeRoute(route);
       }
       if (preloadAllRoutes) {
         StaticRouter.preloadRoutes();

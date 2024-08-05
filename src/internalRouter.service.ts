@@ -16,17 +16,15 @@ export class InternalRouter {
   private _routeStateMap = new Map();
 
   listenRouteChanges() {
-    const event = StaticRouter.isHistoryBasedRouting ? 'popstate' : 'hashchange';
-    if (StaticRouter.isHistoryBasedRouting) {
-      window.history.replaceState({}, null, '');
-      (function (history, fn) {
-        const pushState = history.pushState;
-        history.pushState = function (...args) {
-          pushState.apply(history, args);
-          fn();
-        };
-      })(window.history, this._registerOnHashChange.bind(this));
-    }
+    const event = 'popstate';
+    window.history.replaceState({}, null, '');
+    (function (history, fn) {
+      const pushState = history.pushState;
+      history.pushState = function (...args) {
+        pushState.apply(history, args);
+        fn();
+      };
+    })(window.history, this._registerOnHashChange.bind(this));
     return fromEvent(window, event, () => {
       this._registerOnHashChange();
     });
@@ -41,18 +39,14 @@ export class InternalRouter {
   }
 
   navigateTo(path = '/', state: Record<string, unknown>) {
-    let windowPath = StaticRouter.isHistoryBasedRouting
-      ? window.location.pathname
-      : window.location.hash.replace(/^#/, '');
-    windowPath = windowPath ? windowPath : '/';
+    let windowPath = window.location.pathname;
+    windowPath = windowPath || '/';
     this._routeStateMap.clear();
     this._routeStateMap.set(path, state);
     if (windowPath === path) {
       this._navigateTo(path, state);
     } else {
-      StaticRouter.isHistoryBasedRouting
-        ? window.history.pushState(state, '', path)
-        : (window.location.hash = '#' + path);
+      window.history.pushState(state, '', path);
     }
   }
 
@@ -61,7 +55,7 @@ export class InternalRouter {
   }
 
   private _registerOnHashChange() {
-    const path = StaticRouter.isHistoryBasedRouting ? window.location.pathname : window.location.hash.replace(/^#/, '');
+    const path = window.location.pathname;
     const state = this._routeStateMap.get(path);
     this._navigateTo(path, state);
   }
@@ -84,17 +78,10 @@ export class InternalRouter {
       currentRouteData.state = { ...(state || {}) };
       wrapIntoObservable(routeItem.canActivate()).subscribe((val: boolean) => {
         if (!val) return;
-        const _params = StaticRouter.checkParams(uParams, routeItem);
+        const _params = StaticRouter.checkParams(routeItem.url, path, routeItem.params);
         if (Object.keys(_params).length > 0 || path) {
           currentRouteData.routeParams = new Map(Object.entries(_params));
-          let entries: Iterable<[string, string]> = [];
-          if (StaticRouter.isHistoryBasedRouting) {
-            entries = new URLSearchParams(window.location.search).entries();
-          } else {
-            entries = window.location.hash.split('?')[1]
-              ? new URLSearchParams(window.location.hash.split('?')[1]).entries()
-              : [];
-          }
+          const entries: Iterable<[string, string]> = new URLSearchParams(window.location.search).entries();
           currentRouteData.queryParams = new Map(entries);
           const triggerNavigation = (routeItem: InternalRouteItem) => {
             routeItem.isRegistered = true;

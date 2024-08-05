@@ -1,25 +1,17 @@
-import { InternalRouteItem, Route, RouteItem } from './router.model';
+import { InternalRouteItem, Route } from './router.model';
 
 export class StaticRouter {
   static routeList: Array<InternalRouteItem> = [];
-  static isHistoryBasedRouting = true;
 
-  static checkParams(urlParams: Array<string>, routeItem: RouteItem) {
-    let paramMapCount = 0;
-    const paramsObject: Record<string, any> = {},
-      paramCount = routeItem.paramCount;
+  static checkParams(pathTemplate: string, pathInstance: string, params: string[]) {
+    const regex = new RegExp(pathTemplate.replace(/:[^/]+/g, '([^/]+)'));
+    const match = pathInstance.match(regex);
 
-    for (let i = 0; i < urlParams.length; i++) {
-      const routeParam = routeItem.params[i];
-      if (routeParam.indexOf(':') >= 0) {
-        paramsObject[routeParam.split(':')[1]] = urlParams[i].split('?')[0];
-        paramMapCount += 1;
-      }
+    const paramsObj = {};
+    for (let i = 0; i < params.length; i++) {
+      paramsObj[params[i].replace(':', '')] = match[i + 1];
     }
-    if (paramMapCount === paramCount) {
-      return paramsObject;
-    }
-    return {};
+    return paramsObj;
   }
 
   static getParamCount(params: string[]) {
