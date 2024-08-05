@@ -1,21 +1,18 @@
-var R = Object.defineProperty;
-var b = (a, t, e) => t in a ? R(a, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : a[t] = e;
-var l = (a, t, e) => (b(a, typeof t != "symbol" ? t + "" : t, e), e);
-import { BehaviourSubjectObs as f, SubjectObs as _, fromEvent as P, wrapIntoObservable as g, Injectable as v, Component as O, Renderer as C, Subscriptions as y } from "@plumejs/core";
+var b = Object.defineProperty;
+var _ = (r, t, e) => t in r ? b(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e;
+var o = (r, t, e) => (_(r, typeof t != "symbol" ? t + "" : t, e), e);
+import { BehaviourSubjectObs as f, SubjectObs as P, fromEvent as O, wrapIntoObservable as g, Injectable as d, Component as S, Renderer as T, signal as C, Subscriptions as E } from "@plumejs/core";
 const u = class u {
-  static checkParams(t, e) {
-    let r = 0;
-    const n = {}, i = e.paramCount;
-    for (let s = 0; s < t.length; s++) {
-      const c = e.params[s];
-      c.indexOf(":") >= 0 && (n[c.split(":")[1]] = t[s].split("?")[0], r += 1);
-    }
-    return r === i ? n : {};
+  static checkParams(t, e, a) {
+    const n = new RegExp(t.replace(/:[^/]+/g, "([^/]+)")), s = e.match(n), i = {};
+    for (let l = 0; l < a.length; l++)
+      i[a[l].replace(":", "")] = s[l + 1];
+    return i;
   }
   static getParamCount(t) {
     let e = 0;
-    return t.forEach((r) => {
-      r.indexOf(":") >= 0 && (e += 1);
+    return t.forEach((a) => {
+      a.indexOf(":") >= 0 && (e += 1);
     }), e;
   }
   static formatRoute(t) {
@@ -29,7 +26,7 @@ const u = class u {
       preload: t.preload,
       canActivate: () => !0
     };
-    if (e.params = t.path.split("/").filter((r) => r.length > 0), e.url = t.path, e.template = "", e.redirectTo = t.redirectTo, t.template) {
+    if (e.params = t.path.split("/").filter((a) => a.length > 0), e.url = t.path, e.template = "", e.redirectTo = t.redirectTo, t.template) {
       if (!t.templatePath)
         throw Error("templatePath is required in route if template is mentioned.");
       e.template = t.template, e.templatePath = t.templatePath;
@@ -46,34 +43,34 @@ const u = class u {
       e.templatePath && e.templatePath();
   }
 };
-l(u, "routeList", []), l(u, "isHistoryBasedRouting", !0);
-let o = u;
-const S = (a, t) => a && t ? new RegExp(a.replace(/:[^\s/]+/g, "(.+)")).test(t) : !1;
-var T = Object.defineProperty, E = Object.getOwnPropertyDescriptor, H = (a, t, e, r) => {
-  for (var n = r > 1 ? void 0 : r ? E(t, e) : t, i = a.length - 1, s; i >= 0; i--)
-    (s = a[i]) && (n = (r ? s(t, e, n) : s(n)) || n);
-  return r && n && T(t, e, n), n;
+o(u, "routeList", []);
+let c = u;
+const j = (r, t) => r && t ? new RegExp(r.replace(/:[^\s/]+/g, "(.+)")).test(t) : !1;
+var M = Object.defineProperty, x = Object.getOwnPropertyDescriptor, y = (r, t, e, a) => {
+  for (var n = a > 1 ? void 0 : a ? x(t, e) : t, s = r.length - 1, i; s >= 0; s--)
+    (i = r[s]) && (n = (a ? i(t, e, n) : i(n)) || n);
+  return a && n && M(t, e, n), n;
 };
 let p = class {
   constructor() {
-    l(this, "_currentRoute", new f({
+    o(this, "_currentRoute", new f({
       path: "",
       routeParams: /* @__PURE__ */ new Map(),
       queryParams: /* @__PURE__ */ new Map(),
       state: {}
     }));
-    l(this, "_template", new f(""));
-    l(this, "_navigationEndEvent", new _());
-    l(this, "_routeStateMap", /* @__PURE__ */ new Map());
+    o(this, "_template", new f(""));
+    o(this, "_navigationEndEvent", new P());
+    o(this, "_routeStateMap", /* @__PURE__ */ new Map());
   }
   listenRouteChanges() {
-    const a = o.isHistoryBasedRouting ? "popstate" : "hashchange";
-    return o.isHistoryBasedRouting && (window.history.replaceState({}, null, ""), function(t, e) {
-      const r = t.pushState;
+    const r = "popstate";
+    return window.history.replaceState({}, null, ""), function(t, e) {
+      const a = t.pushState;
       t.pushState = function(...n) {
-        r.apply(t, n), e();
+        a.apply(t, n), e();
       };
-    }(window.history, this._registerOnHashChange.bind(this))), P(window, a, () => {
+    }(window.history, this._registerOnHashChange.bind(this)), O(window, r, () => {
       this._registerOnHashChange();
     });
   }
@@ -83,111 +80,113 @@ let p = class {
   getCurrentRoute() {
     return this._currentRoute.asObservable();
   }
-  navigateTo(a = "/", t) {
-    let e = o.isHistoryBasedRouting ? window.location.pathname : window.location.hash.replace(/^#/, "");
-    e = e || "/", this._routeStateMap.clear(), this._routeStateMap.set(a, t), e === a ? this._navigateTo(a, t) : o.isHistoryBasedRouting ? window.history.pushState(t, "", a) : window.location.hash = "#" + a;
+  navigateTo(r = "/", t) {
+    let e = window.location.pathname;
+    e = e || "/", this._routeStateMap.clear(), this._routeStateMap.set(r, t), e === r ? this._navigateTo(r, t) : window.history.pushState(t, "", r);
   }
   onNavigationEnd() {
     return this._navigationEndEvent.asObservable();
   }
   _registerOnHashChange() {
-    const a = o.isHistoryBasedRouting ? window.location.pathname : window.location.hash.replace(/^#/, ""), t = this._routeStateMap.get(a);
-    this._navigateTo(a, t);
+    const r = window.location.pathname, t = this._routeStateMap.get(r);
+    this._navigateTo(r, t);
   }
-  _navigateTo(a, t) {
-    const e = {}, r = a.split("/").filter((s) => s.length > 0), n = o.routeList.filter((s) => {
-      if (s.params.length === r.length && S(s.url, a))
-        return s;
-      if (s.url === a)
-        return s;
-    }), i = n.length > 0 ? n[0] : null;
-    i && (e.path = a, e.state = { ...t || {} }, g(i.canActivate()).subscribe((s) => {
-      if (!s)
+  _navigateTo(r, t) {
+    const e = {}, a = r.split("/").filter((i) => i.length > 0), n = c.routeList.filter((i) => {
+      if (i.params.length === a.length && j(i.url, r))
+        return i;
+      if (i.url === r)
+        return i;
+    }), s = n.length > 0 ? n[0] : null;
+    s && (e.path = r, e.state = { ...t || {} }, g(s.canActivate()).subscribe((i) => {
+      if (!i)
         return;
-      const c = o.checkParams(r, i);
-      if (Object.keys(c).length > 0 || a) {
-        e.routeParams = new Map(Object.entries(c));
-        let h = [];
-        o.isHistoryBasedRouting ? h = new URLSearchParams(window.location.search).entries() : h = window.location.hash.split("?")[1] ? new URLSearchParams(window.location.hash.split("?")[1]).entries() : [], e.queryParams = new Map(h);
-        const m = (d) => {
-          d.isRegistered = !0, this._currentRoute.next(e), this._template.next(d.template), this._navigationEndEvent.next(null);
+      const l = c.checkParams(s.url, r, s.params);
+      if (Object.keys(l).length > 0 || r) {
+        e.routeParams = new Map(Object.entries(l));
+        const R = new URLSearchParams(window.location.search).entries();
+        e.queryParams = new Map(R);
+        const h = (m) => {
+          m.isRegistered = !0, this._currentRoute.next(e), this._template.next(m.template), this._navigationEndEvent.next(null);
         };
-        i.isRegistered ? m(i) : i.templatePath ? g(i.templatePath()).subscribe(() => {
-          m(i);
-        }) : i.redirectTo && this.navigateTo(i.redirectTo, t);
+        s.isRegistered ? h(s) : s.templatePath ? g(s.templatePath()).subscribe(() => {
+          h(s);
+        }) : s.redirectTo && this.navigateTo(s.redirectTo, t);
       } else
-        this.navigateTo(i.redirectTo, t);
+        this.navigateTo(s.redirectTo, t);
     }));
   }
 };
-p = H([
-  v()
+p = y([
+  d()
 ], p);
-class M {
+class A {
   constructor(t, e) {
-    l(this, "_template", "");
-    l(this, "_subscriptions", new y());
+    o(this, "_template", C(""));
+    o(this, "_subscriptions", new E());
     this.internalRouterSrvc = t, this.renderer = e;
   }
   beforeMount() {
     this._subscriptions.add(
       this.internalRouterSrvc.getTemplate().subscribe((t) => {
-        this._template !== t && (this._template = t);
+        this._template() !== t && this._template.set(t);
       })
     ), this._subscriptions.add(this.internalRouterSrvc.listenRouteChanges());
   }
   mount() {
-    const t = o.isHistoryBasedRouting ? window.location.pathname : window.location.hash.replace(/^#/, "");
+    const t = window.location.pathname;
     this.internalRouterSrvc.navigateTo(t || "/", null);
   }
   unmount() {
     this._subscriptions.unsubscribe();
   }
   render() {
-    return this._template;
+    return this._template();
   }
 }
-const j = () => {
-  O({
+const L = () => {
+  S({
     selector: "router-outlet",
-    deps: [p, C]
-  })(M);
+    deps: [p, T]
+  })(A);
 };
-var B = Object.defineProperty, A = Object.getOwnPropertyDescriptor, x = (a, t, e, r) => {
-  for (var n = r > 1 ? void 0 : r ? A(t, e) : t, i = a.length - 1, s; i >= 0; i--)
-    (s = a[i]) && (n = (r ? s(t, e, n) : s(n)) || n);
-  return r && n && B(t, e, n), n;
+var D = Object.defineProperty, $ = Object.getOwnPropertyDescriptor, I = (r, t, e, a) => {
+  for (var n = a > 1 ? void 0 : a ? $(t, e) : t, s = r.length - 1, i; s >= 0; s--)
+    (i = r[s]) && (n = (a ? i(t, e, n) : i(n)) || n);
+  return a && n && D(t, e, n), n;
 };
-let w = class {
-  constructor(a) {
-    this.internalRouter = a, j();
+function w(r, t = "") {
+  const e = `${t}/${r.path}`.replace(/\/+/g, "/");
+  c.formatRoute({ ...r, path: e }), (r.children || []).forEach((a) => {
+    w(a, e);
+  });
+}
+let v = class {
+  constructor(r) {
+    this.internalRouter = r, L();
   }
   getCurrentRoute() {
     return this.internalRouter.getCurrentRoute();
   }
-  navigateTo(a, t) {
-    this.internalRouter.navigateTo(a, t);
+  navigateTo(r, t) {
+    this.internalRouter.navigateTo(r, t);
   }
   onNavigationEnd() {
     return this.internalRouter.onNavigationEnd();
   }
-  static registerRoutes({
-    routes: a,
-    preloadAllRoutes: t = !1,
-    isHashBasedRouting: e = !1
-  }) {
-    if (e && (o.isHistoryBasedRouting = !e), Array.isArray(a)) {
-      for (const r of a)
-        o.formatRoute(r);
-      t ? o.preloadRoutes() : o.preloadSelectedRoutes();
+  static registerRoutes({ routes: r, preloadAllRoutes: t = !1 }) {
+    if (Array.isArray(r)) {
+      for (const e of r)
+        w(e);
+      t ? c.preloadRoutes() : c.preloadSelectedRoutes();
     } else
       throw Error("router.addRoutes: the parameter must be an array");
   }
 };
-w = x([
-  v({ deps: [p] })
-], w);
+v = I([
+  d({ deps: [p] })
+], v);
 export {
-  w as Router,
-  S as matchPath
+  v as Router,
+  j as matchPath
 };

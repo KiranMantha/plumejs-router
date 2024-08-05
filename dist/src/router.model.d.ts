@@ -16,6 +16,7 @@ export interface Route {
     template?: string;
     redirectTo?: string;
     preload?: boolean;
+    children?: Route[];
     templatePath?: () => Promise<any>;
     canActivate?: () => Observable<boolean> | Promise<boolean> | boolean;
 }

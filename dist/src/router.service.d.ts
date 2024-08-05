@@ -10,9 +10,8 @@ export declare class Router {
     onNavigationEnd(): {
         subscribe: (fn: (() => void) | ((param: unknown) => void)) => () => void;
     };
-    static registerRoutes({ routes, preloadAllRoutes, isHashBasedRouting }: {
+    static registerRoutes({ routes, preloadAllRoutes }: {
         routes: Array<Route>;
         preloadAllRoutes?: boolean;
-        isHashBasedRouting?: boolean;
     }): void;
 }
