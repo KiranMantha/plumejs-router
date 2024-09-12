@@ -17,7 +17,7 @@ export default defineConfig({
     emptyOutDir: false,
     sourcemap: false,
     lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
+      entry: path.resolve(__dirname, 'index.ts'),
       name: 'PlumeJS-Router',
       fileName: 'index',
       formats: ['es']
