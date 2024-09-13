@@ -39,8 +39,7 @@ export class InternalRouter {
   }
 
   navigateTo(path = '/', state: Record<string, unknown>) {
-    let windowPath = window.location.pathname;
-    windowPath = windowPath || '/';
+    const windowPath = window.location.pathname || '/';
     this._routeStateMap.clear();
     this._routeStateMap.set(path, state);
     if (windowPath === path) {
@@ -66,7 +65,7 @@ export class InternalRouter {
       return h.length > 0;
     });
     const routeArr = StaticRouter.routeList.filter((route) => {
-      if (route.params.length === uParams.length && matchPath(route.url, path)) {
+      if (route.fragments.length === uParams.length && matchPath(route.url, path)) {
         return route;
       } else if (route.url === path) {
         return route;

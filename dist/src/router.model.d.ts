@@ -21,6 +21,7 @@ export interface Route {
     canActivate?: () => Observable<boolean> | Promise<boolean> | boolean;
 }
 export interface InternalRouteItem extends RouteItem {
+    fragments: string[];
     isRegistered?: boolean;
     redirectTo?: string;
     preload?: boolean;

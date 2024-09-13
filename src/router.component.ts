@@ -1,14 +1,11 @@
-import { Component, IHooks, Renderer, Subscriptions, signal } from '@plumejs/core';
+import { Component, IHooks, Subscriptions, signal } from '@plumejs/core';
 import { InternalRouter } from './internalRouter.service';
 
 class RouterOutlet implements IHooks {
   private _template = signal('');
   private _subscriptions = new Subscriptions();
 
-  constructor(
-    private internalRouterSrvc: InternalRouter,
-    private renderer: Renderer
-  ) {}
+  constructor(private internalRouterSrvc: InternalRouter) {}
 
   beforeMount() {
     this._subscriptions.add(
@@ -38,7 +35,7 @@ class RouterOutlet implements IHooks {
 const registerRouterOutlet = () => {
   Component({
     selector: 'router-outlet',
-    deps: [InternalRouter, Renderer]
+    deps: [InternalRouter]
   })(RouterOutlet);
 };
 

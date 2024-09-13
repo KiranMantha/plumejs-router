@@ -25,6 +25,7 @@ export interface Route {
 }
 
 export interface InternalRouteItem extends RouteItem {
+  fragments: string[];
   isRegistered?: boolean;
   redirectTo?: string;
   preload?: boolean;
