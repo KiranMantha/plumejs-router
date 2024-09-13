@@ -1,6 +1,6 @@
 var b = Object.defineProperty;
 var _ = (r, t, e) => t in r ? b(r, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : r[t] = e;
-var o = (r, t, e) => (_(r, typeof t != "symbol" ? t + "" : t, e), e);
+var o = (r, t, e) => _(r, typeof t != "symbol" ? t + "" : t, e);
 import { BehaviourSubjectObs as f, SubjectObs as P, fromEvent as O, wrapIntoObservable as g, Injectable as d, Component as S, Renderer as T, signal as C, Subscriptions as E } from "@plumejs/core";
 const u = class u {
   static checkParams(t, e, a) {
@@ -17,7 +17,7 @@ const u = class u {
   }
   static formatRoute(t) {
     const e = {
-      params: {},
+      params: [],
       url: "",
       template: "",
       paramCount: 0,
@@ -27,8 +27,7 @@ const u = class u {
       canActivate: () => !0
     };
     if (e.params = t.path.split("/").filter((a) => a.length > 0), e.url = t.path, e.template = "", e.redirectTo = t.redirectTo, t.template) {
-      if (!t.templatePath)
-        throw Error("templatePath is required in route if template is mentioned.");
+      if (!t.templatePath) throw Error("templatePath is required in route if template is mentioned.");
       e.template = t.template, e.templatePath = t.templatePath;
     }
     t.canActivate && (e.canActivate = t.canActivate), e.paramCount = u.getParamCount(e.params), u.routeList.push(e);
@@ -99,8 +98,7 @@ let p = class {
         return i;
     }), s = n.length > 0 ? n[0] : null;
     s && (e.path = r, e.state = { ...t || {} }, g(s.canActivate()).subscribe((i) => {
-      if (!i)
-        return;
+      if (!i) return;
       const l = c.checkParams(s.url, r, s.params);
       if (Object.keys(l).length > 0 || r) {
         e.routeParams = new Map(Object.entries(l));

@@ -26,7 +26,7 @@ export class StaticRouter {
 
   static formatRoute(route: Route) {
     const internalRouteItem: InternalRouteItem = {
-      params: {},
+      params: [],
       url: '',
       template: '',
       paramCount: 0,
@@ -53,14 +53,14 @@ export class StaticRouter {
 
   static preloadRoutes() {
     for (const route of StaticRouter.routeList) {
-      route.templatePath && route.templatePath();
+      if (route.templatePath) route.templatePath();
     }
   }
 
   static preloadSelectedRoutes() {
     const filteredRoutes = StaticRouter.routeList.filter((route) => route.preload === true);
     for (const route of filteredRoutes) {
-      route.templatePath && route.templatePath();
+      if (route.templatePath) route.templatePath();
     }
   }
 }

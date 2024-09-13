@@ -13,12 +13,12 @@ export class InternalRouter {
   });
   private _template = new BehaviourSubjectObs('');
   private _navigationEndEvent = new SubjectObs();
-  private _routeStateMap = new Map();
+  private _routeStateMap = new Map<string, Record<string, unknown>>();
 
   listenRouteChanges() {
     const event = 'popstate';
     window.history.replaceState({}, null, '');
-    (function (history, fn) {
+    (function (history: History, fn: () => void) {
       const pushState = history.pushState;
       history.pushState = function (...args) {
         pushState.apply(history, args);

@@ -4,11 +4,11 @@ export interface ICurrentRoute {
   path: string;
   routeParams: Map<string, string | number | boolean>;
   queryParams: Map<string, string | number | boolean>;
-  state: Record<string, any>;
+  state: Record<string, unknown>;
 }
 
 export interface RouteItem {
-  params: any;
+  params: string[];
   url: string;
   template: string;
   paramCount: number;
@@ -20,7 +20,7 @@ export interface Route {
   redirectTo?: string;
   preload?: boolean;
   children?: Route[];
-  templatePath?: () => Promise<any>;
+  templatePath?: () => Promise<unknown>;
   canActivate?: () => Observable<boolean> | Promise<boolean> | boolean;
 }
 
@@ -28,6 +28,6 @@ export interface InternalRouteItem extends RouteItem {
   isRegistered?: boolean;
   redirectTo?: string;
   preload?: boolean;
-  templatePath?: () => Promise<any>;
+  templatePath?: () => Promise<unknown>;
   canActivate: () => Observable<boolean> | Promise<boolean> | boolean;
 }
