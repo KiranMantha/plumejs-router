@@ -20,7 +20,7 @@ class RouterOutlet implements IHooks {
 
   mount() {
     const path = window.location.pathname;
-    this.internalRouterSrvc.navigateTo(path || '/', null);
+    this.internalRouterSrvc.navigateTo(path || '/');
   }
 
   unmount() {

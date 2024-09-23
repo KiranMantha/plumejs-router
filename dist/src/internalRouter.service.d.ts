@@ -11,7 +11,7 @@ export declare class InternalRouter {
     getCurrentRoute(): {
         subscribe: (fn: (value?: ICurrentRoute) => void) => () => void;
     };
-    navigateTo(path: string, state: Record<string, unknown>): void;
+    navigateTo(path?: string, state?: Record<string, unknown>): void;
     onNavigationEnd(): {
         subscribe: (fn: (() => void) | ((param: unknown) => void)) => () => void;
     };

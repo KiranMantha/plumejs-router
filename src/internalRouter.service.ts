@@ -38,7 +38,7 @@ export class InternalRouter {
     return this._currentRoute.asObservable();
   }
 
-  navigateTo(path = '/', state: Record<string, unknown>) {
+  navigateTo(path = '/', state: Record<string, unknown> = null) {
     const windowPath = window.location.pathname || '/';
     this._routeStateMap.clear();
     this._routeStateMap.set(path, state);
@@ -61,9 +61,7 @@ export class InternalRouter {
 
   private _navigateTo(path: string, state: Record<string, unknown>) {
     const currentRouteData: Partial<ICurrentRoute> = {};
-    const uParams = path.split('/').filter((h) => {
-      return h.length > 0;
-    });
+    const uParams = path.split('/').filter(Boolean);
     const routeArr = StaticRouter.routeList.filter((route) => {
       if (route.fragments.length === uParams.length && matchPath(route.url, path)) {
         return route;
