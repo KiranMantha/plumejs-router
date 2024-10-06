@@ -1,4 +1,4 @@
-import { ICurrentRoute } from './router.model';
+import { CurrentRoute } from './router.model';
 export declare class InternalRouter {
     private _currentRoute;
     private _template;
@@ -9,9 +9,9 @@ export declare class InternalRouter {
         subscribe: (fn: (value?: string) => void) => () => void;
     };
     getCurrentRoute(): {
-        subscribe: (fn: (value?: ICurrentRoute) => void) => () => void;
+        subscribe: (fn: (value?: CurrentRoute) => void) => () => void;
     };
-    navigateTo(path: string, state: Record<string, unknown>): void;
+    navigateTo(path?: string, state?: Record<string, unknown>): void;
     onNavigationEnd(): {
         subscribe: (fn: (() => void) | ((param: unknown) => void)) => () => void;
     };

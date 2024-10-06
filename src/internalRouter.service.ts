@@ -1,32 +1,30 @@
-import { BehaviourSubjectObs, Injectable, SubjectObs, fromEvent, wrapIntoObservable } from '@plumejs/core';
-import { ICurrentRoute, InternalRouteItem } from './router.model';
+import { BehaviourSubjectObs, fromEvent, Injectable, SubjectObs, wrapIntoObservable } from '@plumejs/core';
+import { CurrentRoute, InternalRouteItem } from './router.model';
 import { StaticRouter } from './staticRouter';
-import { matchPath } from './utils';
+import { matchRoute, PAGE_NOT_FOUND_TEMPLATE } from './utils';
 
 @Injectable()
 export class InternalRouter {
-  private _currentRoute = new BehaviourSubjectObs<ICurrentRoute>({
+  private _currentRoute = new BehaviourSubjectObs<CurrentRoute>({
     path: '',
-    routeParams: new Map(),
-    queryParams: new Map(),
+    routeParams: {},
+    queryParams: {},
     state: {}
   });
   private _template = new BehaviourSubjectObs('');
   private _navigationEndEvent = new SubjectObs();
-  private _routeStateMap = new Map();
+  private _routeStateMap = new Map<string, Record<string, unknown>>();
 
   listenRouteChanges() {
-    const event = StaticRouter.isHistoryBasedRouting ? 'popstate' : 'hashchange';
-    if (StaticRouter.isHistoryBasedRouting) {
-      window.history.replaceState({}, null, '');
-      (function (history, fn) {
-        const pushState = history.pushState;
-        history.pushState = function (...args) {
-          pushState.apply(history, args);
-          fn();
-        };
-      })(window.history, this._registerOnHashChange.bind(this));
-    }
+    const event = 'popstate';
+    window.history.replaceState({}, null, '');
+    (function (history: History, fn: () => void) {
+      const pushState = history.pushState;
+      history.pushState = function (...args) {
+        pushState.apply(history, args);
+        fn();
+      };
+    })(window.history, this._registerOnHashChange.bind(this));
     return fromEvent(window, event, () => {
       this._registerOnHashChange();
     });
@@ -36,23 +34,18 @@ export class InternalRouter {
     return this._template.asObservable();
   }
 
-  getCurrentRoute(): { subscribe: (fn: (value?: ICurrentRoute) => void) => () => void } {
+  getCurrentRoute(): { subscribe: (fn: (value?: CurrentRoute) => void) => () => void } {
     return this._currentRoute.asObservable();
   }
 
-  navigateTo(path = '/', state: Record<string, unknown>) {
-    let windowPath = StaticRouter.isHistoryBasedRouting
-      ? window.location.pathname
-      : window.location.hash.replace(/^#/, '');
-    windowPath = windowPath ? windowPath : '/';
+  navigateTo(path = '/', state: Record<string, unknown> = null) {
+    const windowPath = window.location.pathname || '/';
     this._routeStateMap.clear();
     this._routeStateMap.set(path, state);
     if (windowPath === path) {
       this._navigateTo(path, state);
     } else {
-      StaticRouter.isHistoryBasedRouting
-        ? window.history.pushState(state, '', path)
-        : (window.location.hash = '#' + path);
+      window.history.pushState(state, '', path);
     }
   }
 
@@ -61,44 +54,30 @@ export class InternalRouter {
   }
 
   private _registerOnHashChange() {
-    const path = StaticRouter.isHistoryBasedRouting ? window.location.pathname : window.location.hash.replace(/^#/, '');
+    const path = window.location.pathname;
     const state = this._routeStateMap.get(path);
     this._navigateTo(path, state);
   }
 
   private _navigateTo(path: string, state: Record<string, unknown>) {
-    const currentRouteData: Partial<ICurrentRoute> = {};
-    const uParams = path.split('/').filter((h) => {
-      return h.length > 0;
-    });
-    const routeArr = StaticRouter.routeList.filter((route) => {
-      if (route.params.length === uParams.length && matchPath(route.url, path)) {
-        return route;
-      } else if (route.url === path) {
-        return route;
-      }
-    });
-    const routeItem = routeArr.length > 0 ? routeArr[0] : null;
-    if (routeItem) {
-      currentRouteData.path = path;
-      currentRouteData.state = { ...(state || {}) };
+    const selectedRoute = matchRoute(path, StaticRouter.routeList);
+
+    if (selectedRoute) {
+      const routeItem = selectedRoute.route;
+      const { routeParams, queryParams } = selectedRoute.routeData;
+      const currentRouteData: CurrentRoute = {
+        path,
+        state: { ...(state || {}) },
+        routeParams,
+        queryParams
+      };
+
       wrapIntoObservable(routeItem.canActivate()).subscribe((val: boolean) => {
         if (!val) return;
-        const _params = StaticRouter.checkParams(uParams, routeItem);
-        if (Object.keys(_params).length > 0 || path) {
-          currentRouteData.routeParams = new Map(Object.entries(_params));
-          let entries: Iterable<[string, string]> = [];
-          if (StaticRouter.isHistoryBasedRouting) {
-            entries = new URLSearchParams(window.location.search).entries();
-          } else {
-            entries = window.location.hash.split('?')[1]
-              ? new URLSearchParams(window.location.hash.split('?')[1]).entries()
-              : [];
-          }
-          currentRouteData.queryParams = new Map(entries);
+        if (path) {
           const triggerNavigation = (routeItem: InternalRouteItem) => {
             routeItem.isRegistered = true;
-            this._currentRoute.next(currentRouteData as ICurrentRoute);
+            this._currentRoute.next(currentRouteData as CurrentRoute);
             this._template.next(routeItem.template);
             this._navigationEndEvent.next(null);
           };
@@ -117,6 +96,14 @@ export class InternalRouter {
           this.navigateTo(routeItem.redirectTo, state);
         }
       });
+    } else {
+      const notFoundRoute = StaticRouter.routeList.find((route) => route.path === '/404');
+      if (notFoundRoute) {
+        this._navigateTo(notFoundRoute.path, state);
+      } else {
+        this._template.next(PAGE_NOT_FOUND_TEMPLATE);
+        this._navigationEndEvent.next(null);
+      }
     }
   }
 }

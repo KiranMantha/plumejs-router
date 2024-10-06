@@ -1,17 +1,10 @@
 import type { Observable } from 'rxjs';
 
-export interface ICurrentRoute {
+export interface CurrentRoute {
   path: string;
-  routeParams: Map<string, string | number | boolean>;
-  queryParams: Map<string, string | number | boolean>;
-  state: Record<string, any>;
-}
-
-export interface RouteItem {
-  params: any;
-  url: string;
-  template: string;
-  paramCount: number;
+  routeParams: Record<string, string | number | boolean>;
+  queryParams: Record<string, string | number | boolean>;
+  state: Record<string, unknown>;
 }
 
 export interface Route {
@@ -19,14 +12,20 @@ export interface Route {
   template?: string;
   redirectTo?: string;
   preload?: boolean;
-  templatePath?: () => Promise<any>;
+  children?: Route[];
+  templatePath?: () => Promise<unknown>;
   canActivate?: () => Observable<boolean> | Promise<boolean> | boolean;
 }
 
-export interface InternalRouteItem extends RouteItem {
+export interface InternalRouteItem {
+  params: string[];
+  path: string;
+  template: string;
+  paramCount: number;
+  fragments: string[];
   isRegistered?: boolean;
   redirectTo?: string;
   preload?: boolean;
-  templatePath?: () => Promise<any>;
+  templatePath?: () => Promise<unknown>;
   canActivate: () => Observable<boolean> | Promise<boolean> | boolean;
 }

@@ -1,18 +1,17 @@
-import { Component, IHooks, Renderer, Subscriptions } from '@plumejs/core';
+import { Component, IHooks, Subscriptions, signal } from '@plumejs/core';
 import { InternalRouter } from './internalRouter.service';
-import { StaticRouter } from './staticRouter';
 
 class RouterOutlet implements IHooks {
-  private _template = '';
+  private _template = signal('');
   private _subscriptions = new Subscriptions();
 
-  constructor(private internalRouterSrvc: InternalRouter, private renderer: Renderer) {}
+  constructor(private internalRouterSrvc: InternalRouter) {}
 
   beforeMount() {
     this._subscriptions.add(
       this.internalRouterSrvc.getTemplate().subscribe((tmpl: string) => {
-        if (this._template !== tmpl) {
-          this._template = tmpl;
+        if (this._template() !== tmpl) {
+          this._template.set(tmpl);
         }
       })
     );
@@ -20,8 +19,8 @@ class RouterOutlet implements IHooks {
   }
 
   mount() {
-    const path = StaticRouter.isHistoryBasedRouting ? window.location.pathname : window.location.hash.replace(/^#/, '');
-    this.internalRouterSrvc.navigateTo(path || '/', null);
+    const path = window.location.pathname;
+    this.internalRouterSrvc.navigateTo(path || '/');
   }
 
   unmount() {
@@ -29,15 +28,15 @@ class RouterOutlet implements IHooks {
   }
 
   render() {
-    return this._template;
+    return this._template();
   }
 }
 
 const registerRouterOutlet = () => {
   Component({
     selector: 'router-outlet',
-    deps: [InternalRouter, Renderer]
-  })(RouterOutlet)
-}
+    deps: [InternalRouter]
+  })(RouterOutlet);
+};
 
 export { registerRouterOutlet };
