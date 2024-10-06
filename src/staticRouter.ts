@@ -4,22 +4,11 @@ import { getParams } from './utils';
 export class StaticRouter {
   static routeList: Array<InternalRouteItem> = [];
 
-  static checkParams(pathTemplate: string, pathInstance: string, params: string[]) {
-    const regex = new RegExp(pathTemplate.replace(/:[^/]+/g, '([^/]+)'));
-    const match = pathInstance.match(regex);
-
-    const paramsObj = {};
-    for (let i = 0; i < params.length; i++) {
-      paramsObj[params[i].replace(':', '')] = match[i + 1];
-    }
-    return paramsObj;
-  }
-
   static formatRoute(route: Route) {
     const internalRouteItem: InternalRouteItem = {
       fragments: [],
       params: getParams(route.path),
-      url: route.path,
+      path: route.path,
       template: '',
       paramCount: 0,
       isRegistered: false,

@@ -1,14 +1,14 @@
-import { BehaviourSubjectObs, Injectable, SubjectObs, fromEvent, wrapIntoObservable } from '@plumejs/core';
-import { ICurrentRoute, InternalRouteItem } from './router.model';
+import { BehaviourSubjectObs, fromEvent, Injectable, SubjectObs, wrapIntoObservable } from '@plumejs/core';
+import { CurrentRoute, InternalRouteItem } from './router.model';
 import { StaticRouter } from './staticRouter';
-import { matchPath } from './utils';
+import { matchRoute, PAGE_NOT_FOUND_TEMPLATE } from './utils';
 
 @Injectable()
 export class InternalRouter {
-  private _currentRoute = new BehaviourSubjectObs<ICurrentRoute>({
+  private _currentRoute = new BehaviourSubjectObs<CurrentRoute>({
     path: '',
-    routeParams: new Map(),
-    queryParams: new Map(),
+    routeParams: {},
+    queryParams: {},
     state: {}
   });
   private _template = new BehaviourSubjectObs('');
@@ -34,7 +34,7 @@ export class InternalRouter {
     return this._template.asObservable();
   }
 
-  getCurrentRoute(): { subscribe: (fn: (value?: ICurrentRoute) => void) => () => void } {
+  getCurrentRoute(): { subscribe: (fn: (value?: CurrentRoute) => void) => () => void } {
     return this._currentRoute.asObservable();
   }
 
@@ -60,29 +60,24 @@ export class InternalRouter {
   }
 
   private _navigateTo(path: string, state: Record<string, unknown>) {
-    const currentRouteData: Partial<ICurrentRoute> = {};
-    const uParams = path.split('/').filter(Boolean);
-    const routeArr = StaticRouter.routeList.filter((route) => {
-      if (route.fragments.length === uParams.length && matchPath(route.url, path)) {
-        return route;
-      } else if (route.url === path) {
-        return route;
-      }
-    });
-    const routeItem = routeArr.length > 0 ? routeArr[0] : null;
-    if (routeItem) {
-      currentRouteData.path = path;
-      currentRouteData.state = { ...(state || {}) };
+    const selectedRoute = matchRoute(path, StaticRouter.routeList);
+
+    if (selectedRoute) {
+      const routeItem = selectedRoute.route;
+      const { routeParams, queryParams } = selectedRoute.routeData;
+      const currentRouteData: CurrentRoute = {
+        path,
+        state: { ...(state || {}) },
+        routeParams,
+        queryParams
+      };
+
       wrapIntoObservable(routeItem.canActivate()).subscribe((val: boolean) => {
         if (!val) return;
-        const _params = StaticRouter.checkParams(routeItem.url, path, routeItem.params);
-        if (Object.keys(_params).length > 0 || path) {
-          currentRouteData.routeParams = new Map(Object.entries(_params));
-          const entries: Iterable<[string, string]> = new URLSearchParams(window.location.search).entries();
-          currentRouteData.queryParams = new Map(entries);
+        if (path) {
           const triggerNavigation = (routeItem: InternalRouteItem) => {
             routeItem.isRegistered = true;
-            this._currentRoute.next(currentRouteData as ICurrentRoute);
+            this._currentRoute.next(currentRouteData as CurrentRoute);
             this._template.next(routeItem.template);
             this._navigationEndEvent.next(null);
           };
@@ -101,6 +96,14 @@ export class InternalRouter {
           this.navigateTo(routeItem.redirectTo, state);
         }
       });
+    } else {
+      const notFoundRoute = StaticRouter.routeList.find((route) => route.path === '/404');
+      if (notFoundRoute) {
+        this._navigateTo(notFoundRoute.path, state);
+      } else {
+        this._template.next(PAGE_NOT_FOUND_TEMPLATE);
+        this._navigationEndEvent.next(null);
+      }
     }
   }
 }

@@ -1,25 +1,59 @@
 var b = Object.defineProperty;
-var _ = (a, t, e) => t in a ? b(a, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : a[t] = e;
-var o = (a, t, e) => _(a, typeof t != "symbol" ? t + "" : t, e);
-import { BehaviourSubjectObs as f, SubjectObs as P, fromEvent as O, wrapIntoObservable as g, Injectable as d, Component as S, signal as T, Subscriptions as E } from "@plumejs/core";
-const C = /:([^/]+)/g, j = (a) => {
+var w = (e, t, a) => t in e ? b(e, t, { enumerable: !0, configurable: !0, writable: !0, value: a }) : e[t] = a;
+var u = (e, t, a) => w(e, typeof t != "symbol" ? t + "" : t, a);
+import { BehaviourSubjectObs as g, SubjectObs as P, fromEvent as O, wrapIntoObservable as v, Injectable as _, Component as E, signal as S, Subscriptions as T } from "@plumejs/core";
+const C = /:([^/]+)/g, x = (e) => {
   const t = [];
-  let e;
-  for (; (e = C.exec(a)) !== null; )
-    t.push(e[0]);
+  let a;
+  for (; (a = C.exec(e)) !== null; )
+    t.push(a[0]);
   return t;
-}, M = (a, t) => a && t ? new RegExp(`^${a.replace(/:[^\s/]+/g, "([^/]+)")}$`).test(t) : !1, u = class u {
-  static checkParams(t, e, s) {
-    const r = new RegExp(t.replace(/:[^/]+/g, "([^/]+)")), n = e.match(r), i = {};
-    for (let l = 0; l < s.length; l++)
-      i[s[l].replace(":", "")] = n[l + 1];
-    return i;
+}, B = (e, t) => e && t ? new RegExp(`^${e.replace(/:[^\s/]+/g, "([^/]+)")}$`).test(t) : !1;
+function y(e, t) {
+  const r = e.split("?")[0].split("/").filter(Boolean);
+  for (const n of t) {
+    const s = n.fragments;
+    if (s.length >= r.length || s.includes("*")) {
+      const i = {};
+      let h = !0;
+      for (let o = 0; o < s.length; o++) {
+        const l = s[o], m = r[o];
+        if (l === "*") {
+          h = !0;
+          break;
+        }
+        if (!m && l !== "*") {
+          h = !1;
+          break;
+        }
+        if (l.startsWith(":"))
+          i[l.substring(1)] = m;
+        else if (l !== m) {
+          h = !1;
+          break;
+        }
+      }
+      if (h) {
+        const o = Object.fromEntries(
+          new URLSearchParams(window.location.search).entries()
+        );
+        return { route: n, routeData: { path: e, routeParams: i, queryParams: o } };
+      }
+    }
   }
+  return null;
+}
+const A = `
+  <div style='text-align: center'>
+    <h1>404</h1>
+    <h3>not Found</h3>
+  </div>
+`, p = class p {
   static formatRoute(t) {
-    const e = {
+    const a = {
       fragments: [],
-      params: j(t.path),
-      url: t.path,
+      params: x(t.path),
+      path: t.path,
       template: "",
       paramCount: 0,
       isRegistered: !1,
@@ -27,49 +61,49 @@ const C = /:([^/]+)/g, j = (a) => {
       preload: t.preload,
       canActivate: () => !0
     };
-    if (e.fragments = t.path.split("/").filter((s) => s.length > 0), t.template) {
+    if (a.fragments = t.path.split("/").filter((r) => r.length > 0), t.template) {
       if (!t.templatePath) throw Error("templatePath is required in route if template is mentioned.");
-      e.template = t.template, e.templatePath = t.templatePath;
+      a.template = t.template, a.templatePath = t.templatePath;
     }
-    t.canActivate && (e.canActivate = t.canActivate), e.paramCount = e.params.length, u.routeList.push(e);
+    t.canActivate && (a.canActivate = t.canActivate), a.paramCount = a.params.length, p.routeList.push(a);
   }
   static preloadRoutes() {
-    for (const t of u.routeList)
+    for (const t of p.routeList)
       t.templatePath && t.templatePath();
   }
   static preloadSelectedRoutes() {
-    const t = u.routeList.filter((e) => e.preload === !0);
-    for (const e of t)
-      e.templatePath && e.templatePath();
+    const t = p.routeList.filter((a) => a.preload === !0);
+    for (const a of t)
+      a.templatePath && a.templatePath();
   }
 };
-o(u, "routeList", []);
-let c = u;
-var x = Object.defineProperty, y = Object.getOwnPropertyDescriptor, A = (a, t, e, s) => {
-  for (var r = s > 1 ? void 0 : s ? y(t, e) : t, n = a.length - 1, i; n >= 0; n--)
-    (i = a[n]) && (r = (s ? i(t, e, r) : i(r)) || r);
-  return s && r && x(t, e, r), r;
+u(p, "routeList", []);
+let c = p;
+var j = Object.defineProperty, D = Object.getOwnPropertyDescriptor, L = (e, t, a, r) => {
+  for (var n = r > 1 ? void 0 : r ? D(t, a) : t, s = e.length - 1, i; s >= 0; s--)
+    (i = e[s]) && (n = (r ? i(t, a, n) : i(n)) || n);
+  return r && n && j(t, a, n), n;
 };
-let p = class {
+let f = class {
   constructor() {
-    o(this, "_currentRoute", new f({
+    u(this, "_currentRoute", new g({
       path: "",
-      routeParams: /* @__PURE__ */ new Map(),
-      queryParams: /* @__PURE__ */ new Map(),
+      routeParams: {},
+      queryParams: {},
       state: {}
     }));
-    o(this, "_template", new f(""));
-    o(this, "_navigationEndEvent", new P());
-    o(this, "_routeStateMap", /* @__PURE__ */ new Map());
+    u(this, "_template", new g(""));
+    u(this, "_navigationEndEvent", new P());
+    u(this, "_routeStateMap", /* @__PURE__ */ new Map());
   }
   listenRouteChanges() {
-    const a = "popstate";
-    return window.history.replaceState({}, null, ""), function(t, e) {
-      const s = t.pushState;
-      t.pushState = function(...r) {
-        s.apply(t, r), e();
+    const e = "popstate";
+    return window.history.replaceState({}, null, ""), function(t, a) {
+      const r = t.pushState;
+      t.pushState = function(...n) {
+        r.apply(t, n), a();
       };
-    }(window.history, this._registerOnHashChange.bind(this)), O(window, a, () => {
+    }(window.history, this._registerOnHashChange.bind(this)), O(window, e, () => {
       this._registerOnHashChange();
     });
   }
@@ -79,49 +113,51 @@ let p = class {
   getCurrentRoute() {
     return this._currentRoute.asObservable();
   }
-  navigateTo(a = "/", t = null) {
-    const e = window.location.pathname || "/";
-    this._routeStateMap.clear(), this._routeStateMap.set(a, t), e === a ? this._navigateTo(a, t) : window.history.pushState(t, "", a);
+  navigateTo(e = "/", t = null) {
+    const a = window.location.pathname || "/";
+    this._routeStateMap.clear(), this._routeStateMap.set(e, t), a === e ? this._navigateTo(e, t) : window.history.pushState(t, "", e);
   }
   onNavigationEnd() {
     return this._navigationEndEvent.asObservable();
   }
   _registerOnHashChange() {
-    const a = window.location.pathname, t = this._routeStateMap.get(a);
-    this._navigateTo(a, t);
+    const e = window.location.pathname, t = this._routeStateMap.get(e);
+    this._navigateTo(e, t);
   }
-  _navigateTo(a, t) {
-    const e = {}, s = a.split("/").filter(Boolean), r = c.routeList.filter((i) => {
-      if (i.fragments.length === s.length && M(i.url, a))
-        return i;
-      if (i.url === a)
-        return i;
-    }), n = r.length > 0 ? r[0] : null;
-    n && (e.path = a, e.state = { ...t || {} }, g(n.canActivate()).subscribe((i) => {
-      if (!i) return;
-      const l = c.checkParams(n.url, a, n.params);
-      if (Object.keys(l).length > 0 || a) {
-        e.routeParams = new Map(Object.entries(l));
-        const R = new URLSearchParams(window.location.search).entries();
-        e.queryParams = new Map(R);
-        const h = (m) => {
-          m.isRegistered = !0, this._currentRoute.next(e), this._template.next(m.template), this._navigationEndEvent.next(null);
-        };
-        n.isRegistered ? h(n) : n.templatePath ? g(n.templatePath()).subscribe(() => {
-          h(n);
-        }) : n.redirectTo && this.navigateTo(n.redirectTo, t);
-      } else
-        this.navigateTo(n.redirectTo, t);
-    }));
+  _navigateTo(e, t) {
+    const a = y(e, c.routeList);
+    if (a) {
+      const r = a.route, { routeParams: n, queryParams: s } = a.routeData, i = {
+        path: e,
+        state: { ...t || {} },
+        routeParams: n,
+        queryParams: s
+      };
+      v(r.canActivate()).subscribe((h) => {
+        if (h)
+          if (e) {
+            const o = (l) => {
+              l.isRegistered = !0, this._currentRoute.next(i), this._template.next(l.template), this._navigationEndEvent.next(null);
+            };
+            r.isRegistered ? o(r) : r.templatePath ? v(r.templatePath()).subscribe(() => {
+              o(r);
+            }) : r.redirectTo && this.navigateTo(r.redirectTo, t);
+          } else
+            this.navigateTo(r.redirectTo, t);
+      });
+    } else {
+      const r = c.routeList.find((n) => n.path === "/404");
+      r ? this._navigateTo(r.path, t) : (this._template.next(A), this._navigationEndEvent.next(null));
+    }
   }
 };
-p = A([
-  d()
-], p);
-class $ {
+f = L([
+  _()
+], f);
+class M {
   constructor(t) {
-    o(this, "_template", T(""));
-    o(this, "_subscriptions", new E());
+    u(this, "_template", S(""));
+    u(this, "_subscriptions", new T());
     this.internalRouterSrvc = t;
   }
   beforeMount() {
@@ -142,49 +178,49 @@ class $ {
     return this._template();
   }
 }
-const L = () => {
-  S({
+const $ = () => {
+  E({
     selector: "router-outlet",
-    deps: [p]
-  })($);
+    deps: [f]
+  })(M);
 };
-var D = Object.defineProperty, I = Object.getOwnPropertyDescriptor, N = (a, t, e, s) => {
-  for (var r = s > 1 ? void 0 : s ? I(t, e) : t, n = a.length - 1, i; n >= 0; n--)
-    (i = a[n]) && (r = (s ? i(t, e, r) : i(r)) || r);
-  return s && r && D(t, e, r), r;
+var N = Object.defineProperty, q = Object.getOwnPropertyDescriptor, F = (e, t, a, r) => {
+  for (var n = r > 1 ? void 0 : r ? q(t, a) : t, s = e.length - 1, i; s >= 0; s--)
+    (i = e[s]) && (n = (r ? i(t, a, n) : i(n)) || n);
+  return r && n && N(t, a, n), n;
 };
-function w(a, t = "") {
-  const e = `${t}/${a.path}`.replace(/\/+/g, "/");
-  c.formatRoute({ ...a, path: e }), (a.children || []).forEach((s) => {
-    w(s, e);
+function R(e, t = "") {
+  const a = `${t}/${e.path}`.replace(/\/+/g, "/");
+  c.formatRoute({ ...e, path: a }), (e.children || []).forEach((r) => {
+    R(r, a);
   });
 }
-let v = class {
-  constructor(a) {
-    this.internalRouter = a, L();
+let d = class {
+  constructor(e) {
+    this.internalRouter = e, $();
   }
   getCurrentRoute() {
     return this.internalRouter.getCurrentRoute();
   }
-  navigateTo(a, t) {
-    this.internalRouter.navigateTo(a, t);
+  navigateTo(e, t) {
+    this.internalRouter.navigateTo(e, t);
   }
   onNavigationEnd() {
     return this.internalRouter.onNavigationEnd();
   }
-  static registerRoutes({ routes: a, preloadAllRoutes: t = !1 }) {
-    if (Array.isArray(a)) {
-      for (const e of a)
-        w(e);
+  static registerRoutes({ routes: e, preloadAllRoutes: t = !1 }) {
+    if (Array.isArray(e)) {
+      for (const a of e)
+        R(a);
       t ? c.preloadRoutes() : c.preloadSelectedRoutes();
     } else
       throw Error("router.addRoutes: the parameter must be an array");
   }
 };
-v = N([
-  d({ deps: [p] })
-], v);
+d = F([
+  _({ deps: [f] })
+], d);
 export {
-  v as Router,
-  M as matchPath
+  d as Router,
+  B as matchPath
 };
