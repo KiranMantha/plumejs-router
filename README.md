@@ -9,7 +9,7 @@
 [![GitHub watchers badge](https://img.shields.io/github/watchers/kiranmantha/plumejs-router?style=social)](https://github.com/kiranmantha/plumejs-router/watchers)
 [![GitHub stars badge](https://img.shields.io/github/stars/kiranmantha/plumejs-router.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/kiranmantha/plumejs-router/stargazers/)
 
-**PlumeJS Router** is a scoped package in PlumeJS Ecosystem that enables routing. It uses hash-based / history-based routing. It uses dynamic imports to chunk out route specific logic which reduces main bundle size significantly.
+**PlumeJS Router** is a scoped package in PlumeJS Ecosystem that enables routing. It uses history-based routing and dynamic imports to chunk out route specific logic which reduces main bundle size significantly.
 
 ## Documentation
 
