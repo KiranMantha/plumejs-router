@@ -14,7 +14,7 @@ export default [
         project: ['./tsconfig.json']
       }
     },
-    ignores: ['build/**/*', 'eslint.config.mjs'],
+    ignores: ['dist/**/*', 'eslint.config.mjs', 'vite.config.js'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
