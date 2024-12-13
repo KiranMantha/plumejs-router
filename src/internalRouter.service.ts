@@ -88,6 +88,8 @@ export class InternalRouter {
               });
             } else if (routeItem.redirectTo) {
               this.navigateTo(routeItem.redirectTo, state);
+            } else {
+              triggerNavigation(routeItem);
             }
           } else {
             triggerNavigation(routeItem);
