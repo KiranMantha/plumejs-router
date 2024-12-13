@@ -11,7 +11,7 @@ function normalizeRoute(route: Route, parentPath = '') {
   StaticRouter.formatRoute({ ...route, path: fullPath });
 
   (route.children || []).forEach((childRoute) => {
-    normalizeRoute(childRoute, fullPath);
+    normalizeRoute({ ...childRoute, canActivate: route.canActivate }, fullPath);
   });
 }
 
@@ -36,6 +36,16 @@ export class Router {
   static registerRoutes({ routes, preloadAllRoutes = false }: { routes: Array<Route>; preloadAllRoutes?: boolean }) {
     if (Array.isArray(routes)) {
       for (const route of routes) {
+        if (!route.template && !route.redirectTo && !(route.children || []).length) {
+          throw Error('A route should have either a template or redirectTo path or child routes.');
+        }
+        if (!route.template && !route.redirectTo && (route.children || []).length) {
+          const redirectedChildRoute = route.children.find((childRoute) => childRoute.redirectTo);
+          route.redirectTo = `${route.path}/${redirectedChildRoute?.redirectTo ?? route.children[0].path}`.replace(
+            '//',
+            '/'
+          );
+        }
         normalizeRoute(route);
       }
       if (preloadAllRoutes) {

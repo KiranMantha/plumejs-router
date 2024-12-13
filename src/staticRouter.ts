@@ -10,6 +10,7 @@ export class StaticRouter {
       params: getParams(route.path),
       path: route.path,
       template: '',
+      templatePath: null,
       paramCount: 0,
       isRegistered: false,
       redirectTo: route.redirectTo,
@@ -20,7 +21,6 @@ export class StaticRouter {
       return str.length > 0;
     });
     if (route.template) {
-      if (!route.templatePath) throw Error('templatePath is required in route if template is mentioned.');
       internalRouteItem.template = route.template;
       internalRouteItem.templatePath = route.templatePath;
     }
